@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Modal, notification, Spin } from "antd";
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from "axios";
-import React, {
+import {
   createContext,
   FC,
   ReactElement,
@@ -314,7 +314,8 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
     initializeLogin: (returnUrl?: string) => Promise<void> | void
   ): void => {
     if (reason.code === "ERR_NETWORK" || reason.response.status === 401) {
-      initializeLogin(window.location.pathname);
+      console.log("error");
+      //initializeLogin(window.location.pathname);
     } else if (reason.response.status === 403) {
       Modal.error({
         title: "Unauthorized",

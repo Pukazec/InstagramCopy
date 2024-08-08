@@ -1,17 +1,22 @@
-import { Button } from "antd";
-import React, { useState } from "react";
+import moment from "moment";
+import React, { useEffect } from "react";
+import { useRoutes } from "react-router-dom";
 import "./App.css";
-import PictureForm from "./pages/userManagement/pictures/PictureForm";
+import { routeElements } from "./routes/routeElements";
 
 const App: React.FC = () => {
-  const [open, setOpen] = useState<boolean>(false);
+  useEffect(() => {
+    //Set local time to start week with monday.
+    moment.locale("en", {
+      week: {
+        dow: 1,
+      },
+    });
+  }, []);
 
-  return (
-    <>
-      <Button onClick={() => setOpen(true)}>Open form</Button>
-      <PictureForm open={open} setOpen={setOpen} />
-    </>
-  );
+  const routing = useRoutes(routeElements);
+
+  return <>{routing}</>;
 };
 
 export default App;

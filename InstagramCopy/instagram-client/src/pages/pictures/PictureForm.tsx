@@ -2,7 +2,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Drawer, Form, Select, Upload } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React from "react";
-import { useHttpContext } from "../../../context/HttpContext";
+import { useHttpContext } from "../../context/HttpContext";
 
 interface Props {
   open: boolean;
@@ -20,7 +20,7 @@ const PictureFrom: React.FC<Props> = (props: Props) => {
 
     const { post } = httpContext;
 
-    const result = await post("picture", values, true, true);
+    const result = await post("/picture", values, true, true);
 
     console.log("result", result);
 

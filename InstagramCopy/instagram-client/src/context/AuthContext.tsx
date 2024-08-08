@@ -1,11 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  createContext,
-  FC,
-  ReactElement,
-  useContext,
-  useState,
-} from "react";
+import { createContext, FC, ReactElement, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   RETURN_URL_LOCAL_STORAGE_KEY,
@@ -13,8 +7,8 @@ import {
   USER_EMAIL_LOCAL_STORAGE_KEY,
   USERNAME_LOCAL_STORAGE_KEY,
 } from "../config/constants/cacheConstants";
-import { routes } from "../config/routes/definedRoutes";
 import { LoginDto } from "../pages/userManagement/LoginDtos";
+import { routes } from "../routes/paths";
 
 interface Props {
   children: ReactElement | null;
