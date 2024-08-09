@@ -114,7 +114,7 @@ export const useHttpContext = () => useContext(HttpContext);
 
 export const HttpContextProvider: FC<Props> = (props: Props) => {
   const { accessToken, initializeLogin } = useAuthContext();
-  const localhost = "https://localhost:7258";
+  const localhost = "https://localhost:7054";
   const [loading, setLoading] = useState(false);
   const [loadingRequestsNumber, setLoadingRequestsNumber] = useState(0);
 
@@ -376,7 +376,7 @@ const getGenericRequestConfig = (
   headers?: RawAxiosRequestHeaders
 ): AxiosRequestConfig<any> => {
   const initialHeaders: RawAxiosRequestHeaders = {
-    Authorization: `Bearer ${accessToken}`,
+    // Authorization: `Bearer ${accessToken}`,
   };
 
   if (!headers) {

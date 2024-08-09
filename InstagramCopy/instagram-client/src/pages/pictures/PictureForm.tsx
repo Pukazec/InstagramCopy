@@ -12,13 +12,11 @@ interface Props {
 const PictureFrom: React.FC<Props> = (props: Props) => {
   const { open, setOpen } = props;
   const [form] = Form.useForm();
-  const httpContext = useHttpContext();
+  const { post } = useHttpContext();
 
   const onFinish = async (values: any) => {
     console.log("values", values);
     console.log("form.getFieldsValue()", form.getFieldsValue());
-
-    const { post } = httpContext;
 
     const result = await post("/picture", values, true, true);
 
