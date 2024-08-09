@@ -15,17 +15,21 @@ const PictureFrom: React.FC<Props> = (props: Props) => {
   const { post } = useHttpContext();
 
   const onFinish = async (values: any) => {
-    console.log("values", values);
-    console.log("form.getFieldsValue()", form.getFieldsValue());
+    let dto = values;
+    // console.log("file", file);
+    let image = values.imageData.fileList[0].thumbUrl;
+    image = image.replace("data:image/png;base64,", "");
+    dto.imageData = image;
+    console.log("dto", dto);
 
-    const result = await post("/picture", values, true, true);
+    const result = await post("/picture", dto, true, true);
 
     console.log("result", result);
 
     setOpen(false);
   };
 
-  const handleFileChange = (uploadedFile: File | null) => {
+  const handleFileChange = (uploadedFile: any) => {
     if (
       uploadedFile &&
       (uploadedFile.type === "image/jpeg" ||
@@ -67,7 +71,7 @@ const PictureFrom: React.FC<Props> = (props: Props) => {
         wrapperCol={{ span: 14 }}
         style={{ width: 600 }}
       >
-        <Form.Item label="Picture" name="picture" extra="Select a picture">
+        <Form.Item label="Picture" name="imageData" extra="Select a picture">
           <Upload
             maxCount={1}
             accept=".jpeg,.png,.gif,.bmp,.svg,.ico"

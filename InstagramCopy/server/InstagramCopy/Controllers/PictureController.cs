@@ -26,8 +26,16 @@ namespace InstagramCopy.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(Picture picture)
+        public async Task<ActionResult> Create(PictureCommand command)
         {
+            var picture = new Picture
+            {
+                Id = command.Id,
+                Tags = command.Tags,
+                Description = command.Description,
+                ImageData = Convert.FromBase64String(command.ImageData),
+            };
+
             await context.Pictures.InsertOneAsync(picture);
             return CreatedAtAction(nameof(GetById), new { id = picture.Id }, picture);
         }
