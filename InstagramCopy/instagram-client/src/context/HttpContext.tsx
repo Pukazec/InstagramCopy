@@ -9,7 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { TOKEN_LOCAL_STORAGE_KEY } from "../config/constants/cacheConstants";
+import { TOKEN_LOCAL_STORAGE_KEY } from "../config/cacheConstants";
 import { useAuthContext } from "./AuthContext";
 import { RequestType } from "./HttpContextModels";
 
@@ -43,17 +43,6 @@ export interface IUseHttpValues {
     headers?: RawAxiosRequestHeaders
   ) => Promise<T | undefined>;
   setLoading: (newState: boolean) => void;
-  getIdentity: <T>(
-    url: string,
-    showLoader?: boolean,
-    headers?: RawAxiosRequestHeaders
-  ) => Promise<T | undefined>;
-  postIdentity: <T>(
-    url: string,
-    body: any,
-    showLoader?: boolean,
-    headers?: RawAxiosRequestHeaders
-  ) => Promise<T | undefined>;
 }
 
 const defaultState: IUseHttpValues = {
@@ -90,21 +79,6 @@ const defaultState: IUseHttpValues = {
     throw new Error("Function not implemented!");
   },
   setLoading: (newState: boolean) => {
-    throw new Error("Function not implemented!");
-  },
-  getIdentity: (
-    url: string,
-    showLoader?: boolean,
-    headers?: RawAxiosRequestHeaders
-  ) => {
-    throw new Error("Function not implemented!");
-  },
-  postIdentity: (
-    url: string,
-    body: any,
-    showLoader?: boolean,
-    headers?: RawAxiosRequestHeaders
-  ) => {
     throw new Error("Function not implemented!");
   },
 };
@@ -168,34 +142,6 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
     return await handleRequest<T>(RequestType.delete, url, showLoader, headers);
   }
 
-  async function getIdentity<T>(
-    url: string,
-    showLoader?: boolean,
-    headers?: RawAxiosRequestHeaders
-  ): Promise<T | undefined> {
-    return await handleRequest<T>(
-      RequestType.getIdentity,
-      url,
-      showLoader,
-      headers
-    );
-  }
-
-  async function postIdentity<T>(
-    url: string,
-    body: any,
-    showLoader?: boolean,
-    headers?: RawAxiosRequestHeaders
-  ): Promise<T | undefined> {
-    return await handleRequest<T>(
-      RequestType.postIdentity,
-      url,
-      showLoader,
-      body,
-      headers
-    );
-  }
-
   const handleRequest = async <T,>(
     requestType: RequestType,
     url: string,
@@ -215,18 +161,9 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
 
     await executeRequest<T>(requestType, url, body, headers)
       .then((response) => {
-        const isIdentityRequest =
-          requestType === RequestType.getIdentity ||
-          requestType === RequestType.postIdentity;
-        const isGetRequest =
-          requestType === RequestType.get ||
-          requestType === RequestType.getIdentity;
+        const isGetRequest = requestType === RequestType.get;
 
-        resp = handleResponse(
-          response,
-          showNotification ?? !isGetRequest,
-          isIdentityRequest
-        );
+        resp = handleResponse(response, showNotification ?? !isGetRequest);
       })
       .catch((reason) => {
         handleResponseError<T>(reason, initializeLogin);
@@ -271,17 +208,6 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
           `${localhost}${url}`,
           getGenericRequestConfig(currentAccessToken!, headers)
         );
-      case RequestType.getIdentity:
-        return await axios.get<T>(
-          `${localhost}${url}`,
-          getGenericRequestConfig(currentAccessToken!, headers)
-        );
-      case RequestType.postIdentity:
-        return await axios.post<T>(
-          `${localhost}${url}`,
-          body,
-          getGenericRequestConfig(currentAccessToken!, headers)
-        );
       default:
         break;
     }
@@ -289,10 +215,8 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
 
   const handleResponse = <T,>(
     response: any,
-    showNotification: boolean = false,
-    isIdentityRequest: boolean = false
+    showNotification: boolean = false
   ): T | undefined => {
-    if (isIdentityRequest) return response.data;
     const dto: T = response.data;
     if (!dto) {
       Modal.error({
@@ -360,8 +284,6 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
             put,
             delete: deleteEntity,
             setLoading,
-            getIdentity,
-            postIdentity,
           }}
         >
           {props.children}

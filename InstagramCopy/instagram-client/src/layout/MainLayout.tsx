@@ -58,14 +58,20 @@ const MainLayout: React.FC<Props> = (props: Props) => {
   ];
 
   return (
-    <Layout style={{ display: "flex", alignItems: "center" }}>
+    <Layout
+      style={{
+        display: "flex",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
       <div className="demo-logo" />
       <Menu
         theme="dark"
         mode="horizontal"
         defaultSelectedKeys={["2"]}
         items={items}
-        style={{ flex: 1, minWidth: 0 }}
+        style={{ flex: 1, minWidth: 0, width: "100vw" }}
       />
       <Content style={{ padding: "0 10px" }}>
         <div

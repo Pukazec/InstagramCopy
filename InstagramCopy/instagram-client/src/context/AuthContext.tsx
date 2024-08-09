@@ -6,7 +6,7 @@ import {
   TOKEN_LOCAL_STORAGE_KEY,
   USER_EMAIL_LOCAL_STORAGE_KEY,
   USERNAME_LOCAL_STORAGE_KEY,
-} from "../config/constants/cacheConstants";
+} from "../config/cacheConstants";
 import { LoginDto } from "../pages/userManagement/LoginDtos";
 import { routes } from "../routes/paths";
 

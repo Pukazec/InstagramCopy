@@ -2,6 +2,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Drawer, Form, Select, Upload } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React from "react";
+import { BASE64_IMAGE_PREFIX } from "../../config/genericConstants";
 import { useHttpContext } from "../../context/HttpContext";
 
 interface Props {
@@ -16,16 +17,11 @@ const PictureFrom: React.FC<Props> = (props: Props) => {
 
   const onFinish = async (values: any) => {
     let dto = values;
-    // console.log("file", file);
     let image = values.imageData.fileList[0].thumbUrl;
-    image = image.replace("data:image/png;base64,", "");
+    image = image.replace(BASE64_IMAGE_PREFIX, "");
     dto.imageData = image;
-    console.log("dto", dto);
 
-    const result = await post("/picture", dto, true, true);
-
-    console.log("result", result);
-
+    await post("/picture", dto, true, true);
     setOpen(false);
   };
 
