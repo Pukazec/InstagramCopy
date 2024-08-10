@@ -71,13 +71,14 @@ const MainLayout: React.FC<Props> = (props: Props) => {
         mode="horizontal"
         defaultSelectedKeys={["2"]}
         items={items}
-        style={{ flex: 1, minWidth: 0, width: "100vw" }}
+        style={{ flex: 1, minWidth: 0, width: "100%" }}
       />
       <Content style={{ padding: "0 10px" }}>
         <div
           style={{
+            height: "100%",
             padding: 24,
-            overflow: "auto",
+            overflowY: "auto",
           }}
         >
           {children}

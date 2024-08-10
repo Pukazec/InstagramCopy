@@ -11,10 +11,11 @@ const PictureScreen: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [pictures, setPictures] = useState<any[]>();
   const [picturesToRender, setPicturesToRender] = useState<JSX.Element[]>();
+  const [selectedPicture, setSelectedPicture] = useState<any>();
 
   const [pagination, setPagination] = useState<PaginationConfig>({
-    defaultPageSize: 40,
-    pageSizeOptions: [10, 20, 40, 80],
+    pageSize: 10,
+    pageSizeOptions: [4, 10, 20, 40, 80],
     showSizeChanger: true,
     size: "small",
     current: 1,
@@ -25,6 +26,7 @@ const PictureScreen: React.FC = () => {
       ...currentPagination,
       pageSize: pageSize,
       current: page,
+      total: pictures?.length,
     }));
   };
 
@@ -41,9 +43,14 @@ const PictureScreen: React.FC = () => {
       return;
     }
 
-    const renderedPictures: JSX.Element[] = pictures.map((picture) => {
+    const startIndex = (pagination.current! - 1) * pagination.pageSize!;
+    const endIndex = startIndex + pagination.pageSize!;
+    const currentPictures = pictures.slice(startIndex, endIndex);
+
+    const renderedPictures: JSX.Element[] = currentPictures.map((picture) => {
       return (
         <Card
+          key={picture.id}
           hoverable
           style={{ width: 240 }}
           cover={
@@ -52,7 +59,10 @@ const PictureScreen: React.FC = () => {
               src={`${BASE64_IMAGE_PREFIX}${picture.imageData}`}
             />
           }
-          onClick={() => console.log("open popup")}
+          onClick={() => {
+            setSelectedPicture(picture);
+            setOpen(true);
+          }}
         >
           <Meta title={picture.tags} description={picture.description} />
         </Card>
@@ -68,15 +78,20 @@ const PictureScreen: React.FC = () => {
 
   useEffect(() => {
     renderPictures();
-  }, [pictures]);
+  }, [pictures, pagination]);
 
   return (
     <>
       <Button onClick={() => setOpen(true)}>Open form</Button>
-
-      {picturesToRender}
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
+        {picturesToRender}
+      </div>
       <Pagination {...pagination} onChange={handlePaginationChange} />
-      <PictureForm open={open} setOpen={setOpen} />
+      <PictureForm
+        open={open}
+        setOpen={setOpen}
+        selectedPicture={selectedPicture}
+      />
     </>
   );
 };

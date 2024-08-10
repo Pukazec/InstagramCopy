@@ -8,10 +8,11 @@ import { useHttpContext } from "../../context/HttpContext";
 interface Props {
   open: boolean;
   setOpen: (newState: boolean) => void;
+  selectedPicture: any | undefined;
 }
 
 const PictureFrom: React.FC<Props> = (props: Props) => {
-  const { open, setOpen } = props;
+  const { open, setOpen, selectedPicture } = props;
   const [form] = Form.useForm();
   const { post } = useHttpContext();
 
@@ -66,6 +67,7 @@ const PictureFrom: React.FC<Props> = (props: Props) => {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         style={{ width: 600 }}
+        initialValues={selectedPicture}
       >
         <Form.Item label="Picture" name="imageData" extra="Select a picture">
           <Upload
