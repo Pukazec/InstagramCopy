@@ -1,10 +1,11 @@
 import {
   AppstoreOutlined,
+  LoginOutlined,
   MailOutlined,
-  SettingOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
-import { Content, Footer } from "antd/es/layout/layout";
+import { Content } from "antd/es/layout/layout";
 import { ItemType, MenuItemType } from "antd/es/menu/interface";
 import { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,36 +25,24 @@ const MainLayout: React.FC<Props> = (props: Props) => {
       label: "Navigation One",
       key: "mail",
       icon: <MailOutlined />,
-      onClick: () => navigate(routes.ROUTE_PICTURES),
+      onClick: () => navigate(routes.ROUTE_PICTURES, { replace: true }),
     },
     {
       label: "Navigation Two",
       key: "app",
       icon: <AppstoreOutlined />,
-      disabled: true,
     },
     {
-      label: "Navigation Three - Submenu",
-      key: "SubMenu",
-      icon: <SettingOutlined />,
-      children: [
-        {
-          type: "group",
-          label: "Item 1",
-          children: [
-            { label: "Option 1", key: "setting:1" },
-            { label: "Option 2", key: "setting:2" },
-          ],
-        },
-        {
-          type: "group",
-          label: "Item 2",
-          children: [
-            { label: "Option 3", key: "setting:3" },
-            { label: "Option 4", key: "setting:4" },
-          ],
-        },
-      ],
+      label: "Register",
+      key: "register",
+      icon: <UserAddOutlined />,
+      onClick: () => navigate(routes.ROUTE_REGISTER, { replace: true }),
+    },
+    {
+      label: "Login",
+      key: "login",
+      icon: <LoginOutlined />,
+      onClick: () => navigate(routes.ROUTE_LOGIN, { replace: true }),
     },
   ];
 
@@ -71,7 +60,7 @@ const MainLayout: React.FC<Props> = (props: Props) => {
         mode="horizontal"
         defaultSelectedKeys={["2"]}
         items={items}
-        style={{ flex: 1, minWidth: 0, width: "100%" }}
+        style={{ flex: 1, minWidth: 0, width: "100%", maxHeight: "3.5em" }}
       />
       <Content style={{ padding: "0 10px" }}>
         <div
@@ -84,9 +73,6 @@ const MainLayout: React.FC<Props> = (props: Props) => {
           {children}
         </div>
       </Content>
-      <Footer style={{ textAlign: "center" }}>
-        Ant Design ©{new Date().getFullYear()} Created by Ant UED
-      </Footer>
     </Layout>
   );
 };
