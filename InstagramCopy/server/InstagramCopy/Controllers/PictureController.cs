@@ -5,9 +5,7 @@ using MongoDB.Driver;
 
 namespace InstagramCopy.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class PictureController(MongoDbService context) : ControllerBase
+    public class PictureController(MongoDbService context) : BaseController
     {
 
         [HttpGet]
