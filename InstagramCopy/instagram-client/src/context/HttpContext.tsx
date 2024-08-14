@@ -87,7 +87,7 @@ const HttpContext = createContext<IUseHttpValues>(defaultState);
 export const useHttpContext = () => useContext(HttpContext);
 
 export const HttpContextProvider: FC<Props> = (props: Props) => {
-  const { accessToken, initializeLogin } = useAuthContext();
+  const { initializeLogin } = useAuthContext();
   const localhost = "https://localhost:7054";
   const [loading, setLoading] = useState(false);
   const [loadingRequestsNumber, setLoadingRequestsNumber] = useState(0);
@@ -183,8 +183,9 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
     body?: any,
     headers?: RawAxiosRequestHeaders
   ): Promise<any> {
-    const currentAccessToken =
-      accessToken ?? window.localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY);
+    const currentAccessToken = window.localStorage.getItem(
+      TOKEN_LOCAL_STORAGE_KEY
+    );
     switch (requestType) {
       case RequestType.get:
         return await axios.get<T>(
@@ -239,7 +240,7 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
   ): void => {
     if (reason.code === "ERR_NETWORK" || reason.response.status === 401) {
       console.log("error");
-      //initializeLogin(window.location.pathname);
+      initializeLogin(window.location.pathname);
     } else if (reason.response.status === 403) {
       Modal.error({
         title: "Unauthorized",
