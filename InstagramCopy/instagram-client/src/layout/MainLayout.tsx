@@ -44,6 +44,11 @@ const MainLayout: React.FC<Props> = (props: Props) => {
       icon: <LoginOutlined />,
       onClick: () => navigate(routes.ROUTE_LOGIN, { replace: true }),
     },
+    {
+      label: "Change plan",
+      key: "changePlan",
+      onClick: () => navigate(routes.ROUTE_CHANGE_PLAN, { replace: true }),
+    },
   ];
 
   return (

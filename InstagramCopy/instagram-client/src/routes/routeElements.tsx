@@ -1,5 +1,6 @@
 import MainLayout from "../layout/MainLayout";
 import PictureScreen from "../pages/pictures/PictureScreen";
+import ChangePlanScreen from "../pages/userManagement/ChangePlanScreen";
 import LoginScreen from "../pages/userManagement/LoginScreen";
 import RegisterScreen from "../pages/userManagement/RegisterScreen";
 import UsernameLoginScreen from "../pages/userManagement/UsernameLoginScreen";
@@ -22,6 +23,10 @@ export const routeElements = [
   {
     path: routes.ROUTE_REGISTER,
     element: <MainLayout children={<RegisterScreen />} />,
+  },
+  {
+    path: routes.ROUTE_CHANGE_PLAN,
+    element: <MainLayout children={<ChangePlanScreen />} />,
   },
   // PICTURES
   {
