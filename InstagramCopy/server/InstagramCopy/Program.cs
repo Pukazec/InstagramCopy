@@ -1,9 +1,14 @@
+using FluentValidation;
+using InstagramCopy.Behaviours;
 using InstagramCopy.Data;
 using InstagramCopy.Models.Identity;
+using MediatR;
+using MediatR.Pipeline;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,6 +70,20 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
+
+
+builder.Services.AddMediatR(config =>
+{
+    config.AutoRegisterRequestProcessors = true;
+    config.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
+    config.AddOpenBehavior(typeof(RequestPreProcessorBehavior<,>));
+    config.AddOpenBehavior(typeof(RequestPostProcessorBehavior<,>));
+});
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
+ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true);
+
 
 var app = builder.Build();
 

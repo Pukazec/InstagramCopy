@@ -1,6 +1,7 @@
 using InstagramCopy.Models.Identity;
 using InstagramCopy.Services.UserServices.Identity.Commands;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -27,86 +28,33 @@ namespace InstagramCopy.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginCommand model)
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginCommand command)
         {
-            var user = await _userManager.FindByNameAsync(model.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            var result = await Mediator.Send(command);
+            if (result != null)
             {
-                var authClaims = new List<Claim>
-            {
-                new(ClaimTypes.NameIdentifier, user.UserName),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
-
-                var token = GetToken(authClaims);
-
-                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+                return Ok(result);
             }
             return Unauthorized();
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterCommand model)
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] RegisterCommand command)
         {
-            if (model == null)
-            {
-                return BadRequest("Invalid registration data.");
-            }
-
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "User already exists!");
-            }
-
-            var user = new ApplicationUser()
-            {
-                UserName = model.Username,
-                Email = model.Email,
-                SubscriptionPlan = model.SubscriptionPlan,
-                SubscriptionLastChangedAt = DateTime.Now,
-                SecurityStamp = Guid.NewGuid().ToString()
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "User creation failed! Please check user details and try again.");
-            }
-
-            return Ok("User created successfully!");
+            var result = await Mediator.Send(command);
+            return Ok(result);
         }
 
         [HttpPut("updatePlan")]
-        public async Task<IActionResult> UpdatePlan([FromBody] UpdatePlanCommand model)
+        public async Task<IActionResult> UpdatePlan([FromBody] UpdatePlanCommand command)
         {
-            if (model == null)
-            {
-                return BadRequest("Invalid data.");
-            }
+            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            command.UserName = userName;
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var user = await _userManager.FindByNameAsync(userId);
-            if (user == null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "User does not exist!");
-            }
-
-            user.SubscriptionPlan = model.SubscriptionPlan;
-            user.SubscriptionLastChangedAt = DateTime.Now;
-
-            var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "User update failed!");
-            }
-
-            return Ok("User created successfully!");
+            var result = await Mediator.Send(command);
+            return Ok(result);
         }
 
         [HttpGet("logout")]
@@ -115,21 +63,6 @@ namespace InstagramCopy.Controllers
             await _signInManager.Context.SignOutAsync();
 
             return Ok();
-        }
-
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
-        {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return token;
         }
 
         [HttpGet("github")]
@@ -231,5 +164,19 @@ namespace InstagramCopy.Controllers
             return BadRequest();
         }
 
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                expires: DateTime.Now.AddHours(3),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return token;
+        }
     }
 }

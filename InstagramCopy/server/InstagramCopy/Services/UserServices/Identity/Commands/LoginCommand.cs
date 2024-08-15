@@ -1,6 +1,8 @@
-﻿namespace InstagramCopy.Services.UserServices.Identity.Commands
+﻿using MediatR;
+
+namespace InstagramCopy.Services.UserServices.Identity.Commands
 {
-    public class LoginCommand
+    public class LoginCommand : IRequest<string?>
     {
         public string Username { get; set; } = string.Empty;
 
