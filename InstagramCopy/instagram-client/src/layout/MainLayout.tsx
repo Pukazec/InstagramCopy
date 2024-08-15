@@ -1,14 +1,17 @@
 import {
   AppstoreOutlined,
   LoginOutlined,
+  LogoutOutlined,
   MailOutlined,
   UserAddOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { ItemType, MenuItemType } from "antd/es/menu/interface";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 import { routes } from "../routes/paths";
 
 interface Props {
@@ -17,39 +20,65 @@ interface Props {
 
 const MainLayout: React.FC<Props> = (props: Props) => {
   const { children } = props;
-
   const navigate = useNavigate();
+  const { accessToken, username, logout } = useAuthContext();
+  const [navigation, setNavigation] = useState<
+    ItemType<MenuItemType>[] | undefined
+  >();
 
-  const items: ItemType<MenuItemType>[] | undefined = [
-    {
-      label: "Navigation One",
-      key: "mail",
-      icon: <MailOutlined />,
-      onClick: () => navigate(routes.ROUTE_PICTURES, { replace: true }),
-    },
-    {
-      label: "Navigation Two",
-      key: "app",
-      icon: <AppstoreOutlined />,
-    },
-    {
-      label: "Register",
-      key: "register",
-      icon: <UserAddOutlined />,
-      onClick: () => navigate(routes.ROUTE_REGISTER, { replace: true }),
-    },
-    {
-      label: "Login",
-      key: "login",
-      icon: <LoginOutlined />,
-      onClick: () => navigate(routes.ROUTE_LOGIN, { replace: true }),
-    },
-    {
-      label: "Change plan",
-      key: "changePlan",
-      onClick: () => navigate(routes.ROUTE_CHANGE_PLAN, { replace: true }),
-    },
-  ];
+  const renderNavigation = () => {
+    const navigationItems = [
+      {
+        label: "Navigation One",
+        key: "mail",
+        icon: <MailOutlined />,
+        onClick: () => navigate(routes.ROUTE_PICTURES, { replace: true }),
+      },
+      {
+        label: "Navigation Two",
+        key: "app",
+        icon: <AppstoreOutlined />,
+      },
+    ];
+
+    if (accessToken) {
+      navigationItems.push(
+        {
+          label: username ?? "Change plan",
+          key: "changePlan",
+          icon: <UserOutlined />,
+          onClick: () => navigate(routes.ROUTE_CHANGE_PLAN, { replace: true }),
+        },
+        {
+          label: "Logout",
+          key: "logout",
+          icon: <LogoutOutlined />,
+          onClick: () => logout(),
+        }
+      );
+    } else {
+      navigationItems.push(
+        {
+          label: "Register",
+          key: "register",
+          icon: <UserAddOutlined />,
+          onClick: () => navigate(routes.ROUTE_REGISTER, { replace: true }),
+        },
+        {
+          label: "Login",
+          key: "login",
+          icon: <LoginOutlined />,
+          onClick: () => navigate(routes.ROUTE_LOGIN, { replace: true }),
+        }
+      );
+    }
+
+    setNavigation(navigationItems);
+  };
+
+  useEffect(() => {
+    renderNavigation();
+  }, [accessToken]);
 
   return (
     <Layout
@@ -64,7 +93,7 @@ const MainLayout: React.FC<Props> = (props: Props) => {
         theme="dark"
         mode="horizontal"
         defaultSelectedKeys={["2"]}
-        items={items}
+        items={navigation}
         style={{ flex: 1, minWidth: 0, width: "100%", maxHeight: "3.5em" }}
       />
       <Content style={{ padding: "0 10px" }}>

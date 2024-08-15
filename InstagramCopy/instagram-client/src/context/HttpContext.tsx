@@ -11,7 +11,7 @@ import {
 } from "react";
 import { TOKEN_LOCAL_STORAGE_KEY } from "../config/cacheConstants";
 import { useAuthContext } from "./AuthContext";
-import { RequestType } from "./HttpContextModels";
+import { localhost, RequestType } from "./HttpContextModels";
 
 interface Props {
   children: ReactElement | null;
@@ -88,7 +88,6 @@ export const useHttpContext = () => useContext(HttpContext);
 
 export const HttpContextProvider: FC<Props> = (props: Props) => {
   const { initializeLogin } = useAuthContext();
-  const localhost = "https://localhost:7054";
   const [loading, setLoading] = useState(false);
   const [loadingRequestsNumber, setLoadingRequestsNumber] = useState(0);
 
@@ -299,7 +298,7 @@ const getGenericRequestConfig = (
   headers?: RawAxiosRequestHeaders
 ): AxiosRequestConfig<any> => {
   const initialHeaders: RawAxiosRequestHeaders = {
-    // Authorization: `Bearer ${accessToken}`,
+    Authorization: `Bearer ${accessToken}`,
   };
 
   if (!headers) {

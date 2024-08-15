@@ -3,10 +3,16 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { Button, Form, Input, message } from "antd";
 import axios from "axios";
 import React from "react";
+import { useAuthContext } from "../../context/AuthContext";
+import { useHttpContext } from "../../context/HttpContext";
 
 interface Props {}
 
 const LoginScreen: React.FC<Props> = (props: Props) => {
+  const [form] = Form.useForm();
+  const { post } = useHttpContext();
+  const { onLoginSuccess } = useAuthContext();
+
   const handleGithubLogin = () => {
     window.location.href = "http://localhost:3000/auth/github";
   };
@@ -28,24 +34,21 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
     message.error("Login failed!");
   };
 
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+  const onLocalLoginFinish = async (values: any) => {
+    const result = await post<string>("/Identity/login", values);
+    onLoginSuccess(result);
   };
 
   return (
     <>
       <Form
+        form={form}
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
         initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        onFinish={onLocalLoginFinish}
         autoComplete="off"
       >
         <Form.Item
@@ -107,3 +110,6 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
 };
 
 export default LoginScreen;
+function post(arg0: string, values: any) {
+  throw new Error("Function not implemented.");
+}

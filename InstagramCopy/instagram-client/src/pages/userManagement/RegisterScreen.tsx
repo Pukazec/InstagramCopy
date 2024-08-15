@@ -67,12 +67,16 @@ const RegisterScreen: React.FC = () => {
         <Input />
       </Form.Item>
 
-      <Form.Item label="Plan" name="plan" rules={[{ required: true }]}>
+      <Form.Item
+        label="Plan"
+        name="subscriptionPlan"
+        rules={[{ required: true }]}
+      >
         <Select
           options={[
-            { value: "0", label: "FREE" },
-            { value: "1", label: "PRO" },
-            { value: "2", label: "GOLD" },
+            { value: 0, label: "FREE" },
+            { value: 1, label: "PRO" },
+            { value: 2, label: "GOLD" },
           ]}
         />
       </Form.Item>

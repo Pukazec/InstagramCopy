@@ -1,14 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { createContext, FC, ReactElement, useContext, useState } from "react";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import {
+  createContext,
+  FC,
+  ReactElement,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import {
   RETURN_URL_LOCAL_STORAGE_KEY,
   TOKEN_LOCAL_STORAGE_KEY,
-  USER_EMAIL_LOCAL_STORAGE_KEY,
   USERNAME_LOCAL_STORAGE_KEY,
 } from "../config/cacheConstants";
-import { LoginDto } from "../pages/userManagement/LoginDtos";
 import { routes } from "../routes/paths";
+import { localhost } from "./HttpContextModels";
 
 interface Props {
   children: ReactElement | null;
@@ -20,7 +28,7 @@ export interface IUseAuthValues {
   accessToken?: string;
   refreshToken?: string;
   initializeLogin: (returnUrl?: string) => Promise<void> | void;
-  onLoginSuccess: (loginDto: LoginDto | undefined) => Promise<void> | void;
+  onLoginSuccess: (newAccessToken: string | undefined) => Promise<void> | void;
   logout: () => Promise<void> | void;
 }
 
@@ -28,7 +36,7 @@ const defaultState: IUseAuthValues = {
   initializeLogin: (returnUrl?: string) => {
     throw new Error("Function not implemented!");
   },
-  onLoginSuccess: (loginDto: LoginDto | undefined) => {
+  onLoginSuccess: (newAccessToken: string | undefined) => {
     throw new Error("Function not implemented!");
   },
   logout: () => {
@@ -42,7 +50,6 @@ export const useAuthContext = () => useContext(AuthContext);
 export const AuthContextProvider: FC<Props> = (props: Props) => {
   const navigate = useNavigate();
   const [accessToken, setAccessToken] = useState<string | undefined>();
-  const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
   const [username, setUsername] = useState<string | undefined>(undefined);
 
   const initializeLogin = (returnUrl?: string): Promise<void> | void => {
@@ -53,52 +60,62 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
   };
 
   const onLoginSuccess = (
-    loginDto: LoginDto | undefined
+    newAccessToken: string | undefined
   ): Promise<void> | void => {
-    if (!loginDto) return;
-
-    const newEmail = loginDto.email;
-    const newUsername = loginDto.username;
-    const newAccessToken = loginDto.accessToken;
-
-    if (newEmail !== userEmail) {
-      window.localStorage.setItem(USER_EMAIL_LOCAL_STORAGE_KEY, newEmail);
-      setUserEmail(newEmail);
+    if (!newAccessToken) {
+      return;
     }
+
+    const decodedToken = jwtDecode<any>(newAccessToken);
+    const newUsername =
+      decodedToken[
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+      ];
+
     if (newUsername !== username) {
       window.localStorage.setItem(USERNAME_LOCAL_STORAGE_KEY, newUsername);
       setUsername(newUsername);
     }
+
     if (newAccessToken !== accessToken) {
       window.localStorage.setItem(TOKEN_LOCAL_STORAGE_KEY, newAccessToken);
       setAccessToken(newAccessToken);
     }
 
     const returnUrl = window.localStorage.getItem(RETURN_URL_LOCAL_STORAGE_KEY);
-
     if (returnUrl && returnUrl !== routes.ROUTE_LOGIN) {
       window.localStorage.removeItem(RETURN_URL_LOCAL_STORAGE_KEY);
       navigate(returnUrl);
     } else {
-      navigate(routes.ROUTE_MAIN);
+      navigate(routes.ROUTE_PICTURES, { replace: true });
     }
   };
 
-  const logout = (): Promise<void> | void => {
+  const logout = async (): Promise<void> => {
+    await axios.get(`${localhost}/Identity/logout`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
     window.localStorage.removeItem(TOKEN_LOCAL_STORAGE_KEY);
-    window.localStorage.removeItem(USER_EMAIL_LOCAL_STORAGE_KEY);
+    window.localStorage.removeItem(USERNAME_LOCAL_STORAGE_KEY);
     window.sessionStorage.clear();
     setAccessToken(undefined);
-    setUserEmail(undefined);
     setUsername(undefined);
     return navigate(routes.ROUTE_LOGIN);
   };
+
+  useEffect(() => {
+    setUsername(
+      window.localStorage.getItem(USERNAME_LOCAL_STORAGE_KEY) ?? undefined
+    );
+    setAccessToken(
+      window.localStorage.getItem(TOKEN_LOCAL_STORAGE_KEY) ?? undefined
+    );
+  }, []);
 
   return (
     <>
       <AuthContext.Provider
         value={{
-          userEmail,
           username,
           accessToken,
           initializeLogin,

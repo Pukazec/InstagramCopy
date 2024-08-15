@@ -34,17 +34,13 @@ namespace InstagramCopy.Controllers
             {
                 var authClaims = new List<Claim>
             {
-                new(ClaimTypes.Name, user.UserName),
+                new(ClaimTypes.NameIdentifier, user.UserName),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
                 var token = GetToken(authClaims);
 
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
             }
             return Unauthorized();
         }
@@ -88,11 +84,19 @@ namespace InstagramCopy.Controllers
             {
                 return BadRequest("Invalid data.");
             }
-            var user = await _userManager.GetUserAsync(User);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _userManager.FindByNameAsync(userId);
             if (user == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "User does not exist!");
             }
+
             user.SubscriptionPlan = model.SubscriptionPlan;
             user.SubscriptionLastChangedAt = DateTime.Now;
 
@@ -105,7 +109,7 @@ namespace InstagramCopy.Controllers
             return Ok("User created successfully!");
         }
 
-        [HttpPost("logout")]
+        [HttpGet("logout")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.Context.SignOutAsync();

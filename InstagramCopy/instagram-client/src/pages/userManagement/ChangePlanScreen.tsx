@@ -5,11 +5,11 @@ import { routes } from "../../routes/paths";
 
 const ChangePlanScreen: React.FC = () => {
   const [form] = Form.useForm();
-  const { post } = useHttpContext();
+  const { put } = useHttpContext();
   const navigate = useNavigate();
 
   const updatePlan = async (values: any) => {
-    const result = await post("/Identity/updatePlan", values);
+    const result = await put("/Identity/updatePlan", values);
     if (result) {
       navigate(routes.ROUTE_PICTURES, { replace: true });
     }
@@ -20,23 +20,27 @@ const ChangePlanScreen: React.FC = () => {
       form={form}
       name="dependencies"
       autoComplete="off"
-      style={{ maxWidth: 600 }}
       onFinish={updatePlan}
-      layout="vertical"
+      layout="horizontal"
+      style={{ width: "250px" }}
     >
-      <Form.Item label="Plan" name="plan" rules={[{ required: true }]}>
+      <Form.Item
+        label="Plan"
+        name="subscriptionPlan"
+        rules={[{ required: true }]}
+      >
         <Select
           options={[
-            { value: "0", label: "FREE" },
-            { value: "1", label: "PRO" },
-            { value: "2", label: "GOLD" },
+            { value: 0, label: "FREE" },
+            { value: 1, label: "PRO" },
+            { value: 2, label: "GOLD" },
           ]}
         />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button type="primary" htmlType="submit">
-          Register
+          Change plan
         </Button>
       </Form.Item>
     </Form>
