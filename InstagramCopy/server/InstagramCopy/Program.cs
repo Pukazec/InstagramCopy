@@ -1,5 +1,6 @@
 using FluentValidation;
 using InstagramCopy.Data;
+using InstagramCopy.Data.Factory;
 using InstagramCopy.Models.Identity;
 using InstagramCopy.Services.Behaviours;
 using MediatR;
@@ -17,7 +18,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -71,7 +71,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 builder.Services.AddMediatR(config =>
 {
     config.AutoRegisterRequestProcessors = true;
@@ -82,8 +81,31 @@ builder.Services.AddMediatR(config =>
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true);
 
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true);
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+var pictureFactoryOptions = builder.Configuration.GetSection(PictureFactoryOptions.SectionName).Get<PictureFactoryOptions>();
+if (pictureFactoryOptions?.SelectedFactory == FactoryType.FileSystem)
+{
+    builder.Services.AddSingleton(sp =>
+        new FileSystemPictureFactory(
+            pictureFactoryOptions.RootFileSystemFolder,
+            sp.GetRequiredService<UserManager<ApplicationUser>>()));
+    builder.Services.AddSingleton<IPictureFactory>(sp =>
+        sp.GetRequiredService<FileSystemPictureFactory>());
+}
+else if (pictureFactoryOptions?.SelectedFactory == FactoryType.MongoDb)
+{
+    builder.Services.AddSingleton<MongoDbService>();
+    builder.Services.AddSingleton<MongoPictureFactory>();
+    builder.Services.AddSingleton<IPictureFactory>(sp =>
+        sp.GetRequiredService<MongoPictureFactory>());
+}
+else
+{
+    throw new InvalidOperationException("Invalid or missing PictureFactoryOptions SelectedFactory in configuration");
+}
 
 var app = builder.Build();
 

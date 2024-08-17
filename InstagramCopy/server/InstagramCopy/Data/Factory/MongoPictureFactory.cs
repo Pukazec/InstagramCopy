@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace InstagramCopy.Data.Factory
 {
-    public class MongoPictureFactory
+    public class MongoPictureFactory : IPictureFactory
     {
         private readonly IMongoCollection<Picture> _pictures;
         private readonly UserManager<ApplicationUser> _userManager;
