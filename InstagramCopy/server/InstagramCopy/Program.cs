@@ -1,7 +1,7 @@
 using FluentValidation;
-using InstagramCopy.Behaviours;
 using InstagramCopy.Data;
 using InstagramCopy.Models.Identity;
+using InstagramCopy.Services.Behaviours;
 using MediatR;
 using MediatR.Pipeline;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

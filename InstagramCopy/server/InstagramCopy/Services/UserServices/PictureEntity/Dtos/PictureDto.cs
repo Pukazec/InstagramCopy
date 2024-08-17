@@ -1,30 +1,15 @@
-﻿using InstagramCopy.Models.Identity;
-using System.ComponentModel.DataAnnotations;
-
-namespace InstagramCopy.Models.DbModels
+﻿namespace InstagramCopy.Services.UserServices.PictureEntity.Dtos
 {
-    public class Picture
+    public class PictureDto
     {
         public Guid Id { get; set; }
-
         public int Width { get; set; }
-
         public int Height { get; set; }
-
         public Guid AuthorId { get; set; }
-
-        public ApplicationUser? Author { get; set; }
-
+        public string AuthorName { get; set; } = string.Empty;
         public DateTime UploadedAt { get; set; }
-
-        [MaxLength(25)]
         public string Format { get; set; } = string.Empty;
-
-        [MaxLength(255)]
         public string? Description { get; set; }
-
         public IList<string> HashTags { get; set; } = [];
-
-        public byte[] ImageData { get; set; } = [];
     }
 }
