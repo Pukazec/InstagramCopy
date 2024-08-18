@@ -4,7 +4,7 @@ import { PaginationConfig } from "antd/es/pagination";
 import { useEffect, useState } from "react";
 import { BASE64_IMAGE_PREFIX } from "../../config/genericConstants";
 import { useHttpContext } from "../../context/HttpContext";
-import PictureForm from "./PictureForm";
+import PictureForm from "./CreatePictureForm";
 
 const PictureScreen: React.FC = () => {
   const { get } = useHttpContext();
