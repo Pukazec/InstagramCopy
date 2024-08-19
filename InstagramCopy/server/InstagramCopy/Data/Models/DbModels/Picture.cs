@@ -11,14 +11,15 @@ namespace InstagramCopy.Models.DbModels
 
         public int Height { get; set; }
 
+        public int? Sepia { get; set; }
+
+        public double? Blur { get; set; }
+
         public Guid AuthorId { get; set; }
 
         public ApplicationUser? Author { get; set; }
 
         public DateTime UploadedAt { get; set; }
-
-        [MaxLength(25)]
-        public string Format { get; set; } = string.Empty;
 
         [MaxLength(255)]
         public string? Description { get; set; }

@@ -12,10 +12,10 @@ namespace InstagramCopy.Data.Factory
         private readonly UserManager<ApplicationUser> _userManager;
 
         public MongoPictureFactory(
-            IMongoDatabase database,
+            MongoDbService database,
             UserManager<ApplicationUser> userManager)
         {
-            _pictures = database.GetCollection<Picture>("pictures");
+            _pictures = database.Pictures;
             _userManager = userManager;
         }
 

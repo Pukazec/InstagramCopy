@@ -2,6 +2,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Form, InputNumber, Modal, Select, Slider, Upload } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React, { CSSProperties, useEffect, useState } from "react";
+import { BASE64_IMAGE_PREFIX } from "../../config/genericConstants";
 import { useHttpContext } from "../../context/HttpContext";
 
 interface Props {
@@ -14,74 +15,42 @@ interface ImageOptions {
   height: number | null;
   sepia: number | null;
   blur: number;
-  format: string;
 }
 
 const CreatePictureFrom: React.FC<Props> = (props: Props) => {
   const { open, setOpen, selectedPicture } = props;
   const [form] = Form.useForm();
   const { post } = useHttpContext();
-  const [imageData, setImageData] = useState<any>(null);
+  const [imageData, setImageData] = useState<any>(undefined);
   const [options, setOptions] = useState<ImageOptions>({
     width: null,
     height: null,
     sepia: null,
     blur: 0,
-    format: "image/jpeg",
   });
   const [imagePreview, setImagePreview] = useState<JSX.Element | undefined>();
 
+  const onClose = () => {
+    setImagePreview(undefined);
+    form.resetFields();
+    setOpen(false);
+  };
+
   const onFinish = async (values: any) => {
     let dto = values;
-    if (imageData) {
-      // const canvas = canvasRef.current;
-      // const processedImage = canvas
-      //   ?.toDataURL(options.format)
-      //   .replace(BASE64_IMAGE_PREFIX, "");
-      // dto.imageData = processedImage;
+    let image = imageData;
+    image = image.replace(BASE64_IMAGE_PREFIX, "");
+    dto.imageData = image;
 
-      await post("/picture", dto, true, true);
-      setOpen(false);
+    const result = await post("/picture", dto, true, true);
+    if (result) {
+      onClose();
     }
   };
 
-  // const onFinish = async (values: any) => {
-  //   let dto = values;
-  //   let image = values.imageData.fileList[0].thumbUrl;
-  //   image = image.replace(BASE64_IMAGE_PREFIX, "");
-  //   dto.imageData = image;
-
-  //   await post("/picture", dto, true, true);
-  //   setOpen(false);
-  // };
-
-  // const onFinish = async (values: any) => {
-  //   let dto = values;
-  //   if (imageData) {
-  //     const img = new Image();
-  //     img.src = imageData.thumbUrl;
-
-  //     img.onload = async () => {
-  //       let processedImage = await applyImageFilters(img, {
-  //         width: values.width,
-  //         height: values.height,
-  //         sepia: values.sepia,
-  //         blur: values.blur,
-  //         format: values.format,
-  //       });
-
-  //       processedImage = processedImage.replace(BASE64_IMAGE_PREFIX, "");
-  //       dto.imageData = processedImage;
-
-  //       await post("/picture", dto, true, true);
-  //       setOpen(false);
-  //     };
-  //   }
-  // };
-
   const applyImageFilters = async (image: any, options: any) => {
-    const width = options.width ? `${options.width}px` : undefined;
-    const height = options.height ? `${options.height}px` : undefined;
+    const width = `${options.width}px`;
+    const height = `${options.height}px`;
     const imageStyles: CSSProperties = {
       width: width,
       height: height,
@@ -91,7 +60,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
     setImagePreview(<img src={image} alt="Processed" style={imageStyles} />);
   };
 
-  const handleFileChange = (file: any) => {
+  const handleFileChange = async (file: any) => {
     if (
       file &&
       (file.type === "image/jpeg" ||
@@ -101,30 +70,63 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
         file.type === "image/svg+xml" ||
         file.type === "image/vnd.microsoft.icon")
     ) {
-      setImageData(file);
       return false;
     }
     return Upload.LIST_IGNORE;
   };
 
+  const getImageDimensions = (
+    base64: string
+  ): Promise<{ width: number; height: number }> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = base64;
+      img.onload = () => {
+        resolve({
+          width: img.width,
+          height: img.height,
+        });
+      };
+      img.onerror = reject;
+    });
+  };
+
+  const calculateInitialOptionsValues = async () => {
+    const dimensions = await getImageDimensions(imageData);
+    form.setFieldValue("width", dimensions.width);
+    form.setFieldValue("height", dimensions.height);
+    setOptions({
+      ...options,
+      width: dimensions.width,
+      height: dimensions.height,
+    });
+  };
+
   useEffect(() => {
-    var image = form.getFieldValue("imageData");
-    if (image && image.fileList[0].thumbUrl) {
-      applyImageFilters(image.fileList[0].thumbUrl, options);
+    if (imageData) {
+      calculateInitialOptionsValues();
+    }
+  }, [imageData]);
+
+  useEffect(() => {
+    if (imageData) {
+      applyImageFilters(imageData, options);
     } else {
       setImagePreview(undefined);
     }
-  }, [form.getFieldValue("imageData"), options]);
+  }, [options]);
 
   return (
     <Modal
       key={"picture-upload-drawer"}
       open={open}
       width={800}
-      onClose={() => setOpen(false)}
+      onClose={onClose}
+      closable={true}
+      destroyOnClose={true}
       footer={
         <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-          <Button onClick={() => setOpen(false)}>Close</Button>
+          <Button onClick={onClose}>Close</Button>
           <Button
             onClick={() => form.submit()}
             type="primary"
@@ -140,6 +142,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
         name="picture-upload-form"
         layout="horizontal"
         onFinish={onFinish}
+        onAbort={onClose}
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         style={{ width: 600 }}
@@ -151,6 +154,25 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
             accept=".jpeg,.png,.gif,.bmp,.svg,.ico"
             beforeUpload={handleFileChange}
             listType="picture-card"
+            onChange={(value) => {
+              if (value.fileList.length === 0) {
+                setImageData(undefined);
+                form.setFieldValue("width", undefined);
+                form.setFieldValue("height", undefined);
+                setOptions({
+                  width: null,
+                  height: null,
+                  sepia: null,
+                  blur: 0,
+                });
+              } else {
+                new Promise((resolve) => setTimeout(resolve, 500)).then(() => {
+                  if (value.fileList[0]) {
+                    setImageData(value.fileList[0].thumbUrl);
+                  }
+                });
+              }
+            }}
           >
             <Button
               icon={
@@ -169,6 +191,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
             onChange={(value) =>
               setOptions({ ...options, width: value as number })
             }
+            disabled={!imageData}
           />
         </Form.Item>
         <Form.Item label="Height" name="height">
@@ -177,6 +200,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
             onChange={(value) =>
               setOptions({ ...options, height: value as number })
             }
+            disabled={!imageData}
           />
         </Form.Item>
         <Form.Item label="Sepia" name="sepia" valuePropName="checked">
@@ -184,6 +208,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
             min={0}
             max={100}
             onChange={(value) => setOptions({ ...options, sepia: value })}
+            disabled={!imageData}
           />
         </Form.Item>
         <Form.Item label="Blur" name="blur">
@@ -194,19 +219,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
             onChange={(value) =>
               setOptions({ ...options, blur: value as number })
             }
-          />
-        </Form.Item>
-        <Form.Item label="Format" name="format">
-          <Select
-            options={[
-              { value: "image/jpeg", label: "JPEG" },
-              { value: "image/png", label: "PNG" },
-              { value: "image/gif", label: "GIF" },
-              { value: "image/bmp", label: "BMP" },
-              { value: "image/svg+xml", label: "SVG" },
-              { value: "image/vnd.microsoft.icon", label: "ICO" },
-            ]}
-            onChange={(value) => setOptions({ ...options, format: value })}
+            disabled={!imageData}
           />
         </Form.Item>
         <Form.Item label="Preview">{imagePreview}</Form.Item>

@@ -5,7 +5,7 @@
         public const string SectionName = "PictureFactory";
 
         public FactoryType SelectedFactory { get; set; }
-        public string RootFileSystemFolder { get; set; } = "D:/InstagramCopy";
+        public string RootFileSystemFolder { get; set; } = "D:\\InstagramCopy";
     }
 
     public enum FactoryType

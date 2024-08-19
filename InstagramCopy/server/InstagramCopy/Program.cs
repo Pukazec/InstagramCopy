@@ -86,20 +86,29 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), incl
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var pictureFactoryOptions = builder.Configuration.GetSection(PictureFactoryOptions.SectionName).Get<PictureFactoryOptions>();
+builder.Services.AddScoped<FileSystemPictureFactory>(
+    sp =>
+    new FileSystemPictureFactory(
+        pictureFactoryOptions.RootFileSystemFolder,
+        sp.GetRequiredService<UserManager<ApplicationUser>>())
+    );
+
+builder.Services.AddSingleton<MongoDbService>();
+builder.Services.AddScoped<MongoPictureFactory>(
+    //sp =>
+    //new MongoPictureFactory(
+    //    sp.GetRequiredService<MongoDbService>(),
+    //    sp.GetRequiredService<UserManager<ApplicationUser>>())
+    );
+
 if (pictureFactoryOptions?.SelectedFactory == FactoryType.FileSystem)
 {
-    builder.Services.AddSingleton(sp =>
-        new FileSystemPictureFactory(
-            pictureFactoryOptions.RootFileSystemFolder,
-            sp.GetRequiredService<UserManager<ApplicationUser>>()));
-    builder.Services.AddSingleton<IPictureFactory>(sp =>
+    builder.Services.AddScoped<IPictureFactory>(sp =>
         sp.GetRequiredService<FileSystemPictureFactory>());
 }
 else if (pictureFactoryOptions?.SelectedFactory == FactoryType.MongoDb)
 {
-    builder.Services.AddSingleton<MongoDbService>();
-    builder.Services.AddSingleton<MongoPictureFactory>();
-    builder.Services.AddSingleton<IPictureFactory>(sp =>
+    builder.Services.AddScoped<IPictureFactory>(sp =>
         sp.GetRequiredService<MongoPictureFactory>());
 }
 else

@@ -2,6 +2,7 @@ using InstagramCopy.Services.UserServices.PictureEntity.Commands;
 using InstagramCopy.Services.UserServices.PictureEntity.Dtos;
 using InstagramCopy.Services.UserServices.PictureEntity.Filters;
 using InstagramCopy.Services.UserServices.PictureEntity.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InstagramCopy.Controllers
@@ -23,8 +24,10 @@ namespace InstagramCopy.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> Create([FromBody] CreatePictureCommand command)
         {
+            var user = User.Identity;
             var result = await Mediator.Send(command);
             return Ok(result);
         }

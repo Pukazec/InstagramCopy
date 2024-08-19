@@ -17,6 +17,7 @@ namespace InstagramCopy.Data.Factory
         {
             _pictureDirectory = pictureDirectory;
             _userManager = userManager;
+            CreateDirectoryIfNotExists(_pictureDirectory);
         }
 
         public IList<Picture> GetFilteredPictures(PictureFilter filter)
@@ -91,6 +92,14 @@ namespace InstagramCopy.Data.Factory
                 return true;
             }
             return false;
+        }
+
+        private void CreateDirectoryIfNotExists(string directoryPath)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
         }
     }
 }
