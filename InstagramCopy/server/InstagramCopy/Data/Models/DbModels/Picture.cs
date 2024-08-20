@@ -1,5 +1,4 @@
-﻿using InstagramCopy.Models.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace InstagramCopy.Models.DbModels
 {
@@ -15,9 +14,7 @@ namespace InstagramCopy.Models.DbModels
 
         public double? Blur { get; set; }
 
-        public Guid AuthorId { get; set; }
-
-        public ApplicationUser? Author { get; set; }
+        public string AuthorName { get; set; } = string.Empty;
 
         public DateTime UploadedAt { get; set; }
 

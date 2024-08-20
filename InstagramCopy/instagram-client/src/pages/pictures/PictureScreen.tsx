@@ -1,14 +1,17 @@
 import { Button, Card, Pagination } from "antd";
 import Meta from "antd/es/card/Meta";
 import { PaginationConfig } from "antd/es/pagination";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { BASE64_IMAGE_PREFIX } from "../../config/genericConstants";
 import { useHttpContext } from "../../context/HttpContext";
-import PictureForm from "./CreatePictureForm";
+import CreatePictureForm from "./CreatePictureForm";
+import PictureDetails from "./PictureDetails";
 
 const PictureScreen: React.FC = () => {
   const { get } = useHttpContext();
-  const [open, setOpen] = useState<boolean>(false);
+  const [createPictureOpen, setCreatePictureOpen] = useState<boolean>(false);
+  const [pictureDetailsOpen, setPictureDetailsOpen] = useState<boolean>(false);
   const [pictures, setPictures] = useState<any[]>();
   const [picturesToRender, setPicturesToRender] = useState<JSX.Element[]>();
   const [selectedPicture, setSelectedPicture] = useState<any>();
@@ -52,19 +55,46 @@ const PictureScreen: React.FC = () => {
         <Card
           key={picture.id}
           hoverable
-          style={{ width: 240 }}
+          style={{ width: 245, margin: "10px" }}
           cover={
             <img
+              style={{
+                filter: `sepia(${picture.sepia}%) blur(${picture.blur}px)`,
+              }}
               alt={picture.id}
               src={`${BASE64_IMAGE_PREFIX}${picture.imageData}`}
             />
           }
           onClick={() => {
             setSelectedPicture(picture);
-            setOpen(true);
+            setPictureDetailsOpen(true);
           }}
         >
-          <Meta title={picture.tags} description={picture.description} />
+          <Meta
+            title={picture.tags}
+            description={
+              <div>
+                <div>
+                  <span>Tags: </span> {picture.hashTags.join(", ")}
+                </div>
+                <div>
+                  <span>Author: </span> {picture.authorName}
+                </div>
+                <div>
+                  <span>Uploaded at: </span>
+
+                  {moment(picture.uploadedAt).format("HH:mm DD.MM.YY.")}
+                </div>
+                <div>
+                  <span>Description: </span>
+
+                  {picture.description.length > 20
+                    ? `${picture.description.substring(0, 20)}...`
+                    : picture.description}
+                </div>
+              </div>
+            }
+          />
         </Card>
       );
     });
@@ -74,7 +104,7 @@ const PictureScreen: React.FC = () => {
 
   useEffect(() => {
     getPictures();
-  }, []);
+  }, [pictureDetailsOpen, createPictureOpen]);
 
   useEffect(() => {
     renderPictures();
@@ -82,14 +112,18 @@ const PictureScreen: React.FC = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Open form</Button>
+      <Button onClick={() => setCreatePictureOpen(true)}>Open form</Button>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {picturesToRender}
       </div>
       <Pagination {...pagination} onChange={handlePaginationChange} />
-      <PictureForm
-        open={open}
-        setOpen={setOpen}
+      <CreatePictureForm
+        open={createPictureOpen}
+        setOpen={setCreatePictureOpen}
+      />
+      <PictureDetails
+        open={pictureDetailsOpen}
+        setOpen={setPictureDetailsOpen}
         selectedPicture={selectedPicture}
       />
     </>

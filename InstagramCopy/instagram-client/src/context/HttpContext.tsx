@@ -37,7 +37,7 @@ export interface IUseHttpValues {
     showNotification?: boolean,
     headers?: RawAxiosRequestHeaders
   ) => Promise<T | undefined>;
-  delete: <T>(
+  deleteEntity: <T>(
     url: string,
     showLoader?: boolean,
     headers?: RawAxiosRequestHeaders
@@ -71,7 +71,7 @@ const defaultState: IUseHttpValues = {
   ) => {
     throw new Error("Function not implemented!");
   },
-  delete: (
+  deleteEntity: (
     url: string,
     showLoader?: boolean,
     headers?: RawAxiosRequestHeaders
@@ -238,7 +238,7 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
     initializeLogin: (returnUrl?: string) => Promise<void> | void
   ): void => {
     if (reason.code === "ERR_NETWORK" || reason.response.status === 401) {
-      console.log("error");
+      console.log("error", reason);
       initializeLogin(window.location.pathname);
     } else if (reason.response.status === 403) {
       Modal.error({
@@ -282,7 +282,7 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
             get,
             post,
             put,
-            delete: deleteEntity,
+            deleteEntity: deleteEntity,
             setLoading,
           }}
         >

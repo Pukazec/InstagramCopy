@@ -1,7 +1,5 @@
 ﻿using InstagramCopy.Models.DbModels;
-using InstagramCopy.Models.Identity;
 using InstagramCopy.Services.UserServices.PictureEntity.Filters;
-using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
 
 namespace InstagramCopy.Data.Factory
@@ -9,14 +7,11 @@ namespace InstagramCopy.Data.Factory
     public class FileSystemPictureFactory : IPictureFactory
     {
         private readonly string _pictureDirectory;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         public FileSystemPictureFactory(
-            string pictureDirectory,
-            UserManager<ApplicationUser> userManager)
+            string pictureDirectory)
         {
             _pictureDirectory = pictureDirectory;
-            _userManager = userManager;
             CreateDirectoryIfNotExists(_pictureDirectory);
         }
 
@@ -31,11 +26,7 @@ namespace InstagramCopy.Data.Factory
 
             if (filter.AuthorName != null)
             {
-                var author = _userManager.Users.FirstOrDefault(u => u.UserName == filter.AuthorName);
-                if (author != null)
-                {
-                    pictures = pictures.Where(p => p.AuthorId.Equals(author.Id)).ToList();
-                }
+                pictures = pictures.Where(p => p.AuthorName.Equals(filter.AuthorName)).ToList();
             }
 
             if (filter.From.HasValue)

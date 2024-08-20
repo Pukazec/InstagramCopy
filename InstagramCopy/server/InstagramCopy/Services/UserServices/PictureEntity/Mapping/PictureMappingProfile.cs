@@ -9,13 +9,14 @@ namespace InstagramCopy.Services.UserServices.PictureEntity.Mapping
     {
         public PictureMappingProfile()
         {
-            CreateMap<Picture, PictureDto>();
-
-            CreateMap<Picture, PictureDetailDto>()
-                .IncludeBase<Picture, PictureDto>()
+            CreateMap<Picture, PictureDto>()
                 .ForMember(dest => dest.ImageData, opt => opt.MapFrom(src => Convert.ToBase64String(src.ImageData)));
 
+            CreateMap<Picture, PictureDetailDto>()
+                .IncludeBase<Picture, PictureDto>();
+
             CreateMap<CreatePictureCommand, Picture>()
+                .ForMember(dest => dest.UploadedAt, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.ImageData, opt => opt.MapFrom(src => Convert.FromBase64String(src.ImageData)));
 
             CreateMap<UpdatePictureCommand, Picture>();

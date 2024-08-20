@@ -1,7 +1,5 @@
 ﻿using InstagramCopy.Models.DbModels;
-using InstagramCopy.Models.Identity;
 using InstagramCopy.Services.UserServices.PictureEntity.Filters;
-using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 
 namespace InstagramCopy.Data.Factory
@@ -9,14 +7,11 @@ namespace InstagramCopy.Data.Factory
     public class MongoPictureFactory : IPictureFactory
     {
         private readonly IMongoCollection<Picture> _pictures;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         public MongoPictureFactory(
-            MongoDbService database,
-            UserManager<ApplicationUser> userManager)
+            MongoDbService database)
         {
             _pictures = database.Pictures;
-            _userManager = userManager;
         }
 
         public IList<Picture> GetFilteredPictures(PictureFilter filter)
@@ -25,11 +20,7 @@ namespace InstagramCopy.Data.Factory
 
             if (filter.AuthorName != null)
             {
-                var author = _userManager.Users.FirstOrDefault(u => u.UserName == filter.AuthorName);
-                if (author != null)
-                {
-                    query = (MongoDB.Driver.Linq.IMongoQueryable<Picture>)query.Where(p => p.AuthorId.Equals(author.Id));
-                }
+                query = (MongoDB.Driver.Linq.IMongoQueryable<Picture>)query.Where(p => p.AuthorName.Equals(filter.AuthorName));
             }
 
             if (filter.From.HasValue)

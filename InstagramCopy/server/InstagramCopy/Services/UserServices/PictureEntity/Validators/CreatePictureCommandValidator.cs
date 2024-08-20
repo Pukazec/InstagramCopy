@@ -11,9 +11,7 @@ namespace InstagramCopy.Services.UserServices.PictureEntity.Validators
                     .NotEmpty();
             RuleFor(x => x.Height)
                     .NotEmpty();
-            RuleFor(x => x.AuthorId)
-                    .NotEmpty();
-            RuleFor(x => x.Format)
+            RuleFor(x => x.AuthorName)
                     .NotEmpty();
             RuleFor(x => x.ImageData)
                     .NotEmpty();

@@ -4,21 +4,15 @@ import TextArea from "antd/es/input/TextArea";
 import React, { CSSProperties, useEffect, useState } from "react";
 import { BASE64_IMAGE_PREFIX } from "../../config/genericConstants";
 import { useHttpContext } from "../../context/HttpContext";
+import { ImageOptions } from "./PictureModels";
 
 interface Props {
   open: boolean;
   setOpen: (newState: boolean) => void;
-  selectedPicture: any | undefined;
-}
-interface ImageOptions {
-  width: number | null;
-  height: number | null;
-  sepia: number | null;
-  blur: number;
 }
 
 const CreatePictureFrom: React.FC<Props> = (props: Props) => {
-  const { open, setOpen, selectedPicture } = props;
+  const { open, setOpen } = props;
   const [form] = Form.useForm();
   const { post } = useHttpContext();
   const [imageData, setImageData] = useState<any>(undefined);
@@ -146,7 +140,6 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         style={{ width: 600 }}
-        initialValues={selectedPicture}
       >
         <Form.Item label="Picture" name="imageData" extra="Select a picture">
           <Upload
@@ -223,7 +216,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
           />
         </Form.Item>
         <Form.Item label="Preview">{imagePreview}</Form.Item>
-        <Form.Item label="Tags" name="tags">
+        <Form.Item label="Tags" name="hashTags">
           <Select mode="tags" />
         </Form.Item>
         <Form.Item label="Description" name="description">
