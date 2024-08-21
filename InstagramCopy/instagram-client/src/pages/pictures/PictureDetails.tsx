@@ -43,6 +43,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
     setRenderedPicture(
       <div style={{ display: "flex", alignItems: "flex-start" }}>
         <Image
+          id={pictureDetails.id}
           style={{
             filter: `sepia(${pictureDetails.sepia}%) blur(${pictureDetails.blur}px)`,
           }}
