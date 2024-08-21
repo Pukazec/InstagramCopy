@@ -21,7 +21,8 @@ namespace InstagramCopy.Services.UserServices.Identity.Handlers
                 UserName = request.Username,
                 Email = request.Email,
                 SubscriptionPlan = request.SubscriptionPlan,
-                SubscriptionLastChangedAt = DateTime.Now,
+                DesiredSubscriptionPlan = request.SubscriptionPlan,
+                TodayUploadCount = 0,
                 SecurityStamp = Guid.NewGuid().ToString()
             };
 
@@ -30,6 +31,8 @@ namespace InstagramCopy.Services.UserServices.Identity.Handlers
             {
                 throw new Exception(string.Concat(result.Errors.Select(x => x.Description)));
             }
+
+            await _userManager.AddToRoleAsync(user, "User");
 
             return "User created successfully!";
         }

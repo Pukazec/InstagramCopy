@@ -7,6 +7,8 @@ namespace InstagramCopy.Models.Identity
     {
         public SubscriptionPlan SubscriptionPlan { get; set; }
 
-        public DateTime SubscriptionLastChangedAt { get; set; }
+        public SubscriptionPlan DesiredSubscriptionPlan { get; set; }
+
+        public int TodayUploadCount { get; set; }
     }
 }

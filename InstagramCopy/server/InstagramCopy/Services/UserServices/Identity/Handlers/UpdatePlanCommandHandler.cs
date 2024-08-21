@@ -19,8 +19,7 @@ namespace InstagramCopy.Services.UserServices.Identity.Handlers
             var user = await _userManager.FindByNameAsync(request.UserName)
                 ?? throw new Exception("User does not exist!");
 
-            user.SubscriptionPlan = request.SubscriptionPlan;
-            user.SubscriptionLastChangedAt = DateTime.Now;
+            user.DesiredSubscriptionPlan = request.SubscriptionPlan;
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)

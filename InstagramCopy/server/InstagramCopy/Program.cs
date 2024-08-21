@@ -8,6 +8,7 @@ using MediatR.Pipeline;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
@@ -86,20 +87,14 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), incl
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var pictureFactoryOptions = builder.Configuration.GetSection(PictureFactoryOptions.SectionName).Get<PictureFactoryOptions>();
-builder.Services.AddScoped<FileSystemPictureFactory>(
+builder.Services.AddScoped(
     sp =>
     new FileSystemPictureFactory(
-        pictureFactoryOptions.RootFileSystemFolder,
-        sp.GetRequiredService<UserManager<ApplicationUser>>())
+        pictureFactoryOptions.RootFileSystemFolder)
     );
 
 builder.Services.AddSingleton<MongoDbService>();
-builder.Services.AddScoped<MongoPictureFactory>(
-    //sp =>
-    //new MongoPictureFactory(
-    //    sp.GetRequiredService<MongoDbService>(),
-    //    sp.GetRequiredService<UserManager<ApplicationUser>>())
-    );
+builder.Services.AddScoped<MongoPictureFactory>();
 
 if (pictureFactoryOptions?.SelectedFactory == FactoryType.FileSystem)
 {
@@ -123,13 +118,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    IdentityModelEventSource.ShowPII = true;
 }
 
 app.UseCors();
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
