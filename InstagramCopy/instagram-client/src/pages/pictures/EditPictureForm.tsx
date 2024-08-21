@@ -14,7 +14,7 @@ const EditPictureFrom: React.FC<Props> = (props: Props) => {
   const [form] = Form.useForm();
   const { put } = useHttpContext();
 
-  const onClose = () => {
+  const onCancel = () => {
     form.resetFields();
     setOpen(false);
   };
@@ -24,7 +24,7 @@ const EditPictureFrom: React.FC<Props> = (props: Props) => {
 
     const result = await put(`/picture/${selectedPicture.id}`, dto, true, true);
     if (result) {
-      onClose();
+      onCancel();
     }
   };
 
@@ -33,12 +33,12 @@ const EditPictureFrom: React.FC<Props> = (props: Props) => {
       key={"picture-update-drawer"}
       open={open}
       width={800}
-      onClose={onClose}
+      onCancel={onCancel}
       closable={true}
       destroyOnClose={true}
       footer={
         <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onCancel}>Close</Button>
           <Button
             onClick={() => form.submit()}
             type="primary"
@@ -54,7 +54,7 @@ const EditPictureFrom: React.FC<Props> = (props: Props) => {
         name="picture-update-form"
         layout="horizontal"
         onFinish={onFinish}
-        onAbort={onClose}
+        onAbort={onCancel}
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         style={{ width: 600 }}

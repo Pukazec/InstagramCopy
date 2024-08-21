@@ -39,9 +39,9 @@ namespace InstagramCopy.Data.Factory
                 pictures = pictures.Where(p => p.UploadedAt <= filter.To.Value).ToList();
             }
 
-            if (filter.Hashtags.Any())
+            if (filter.HashTags.Any())
             {
-                pictures = pictures.Where(p => filter.Hashtags.All(ht => p.HashTags.Contains(ht))).ToList();
+                pictures = pictures.Where(p => filter.HashTags.All(ht => p.HashTags.Contains(ht))).ToList();
             }
 
             return pictures.ToList();

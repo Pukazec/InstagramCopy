@@ -24,7 +24,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
   });
   const [imagePreview, setImagePreview] = useState<JSX.Element | undefined>();
 
-  const onClose = () => {
+  const onCancel = () => {
     setImagePreview(undefined);
     form.resetFields();
     setOpen(false);
@@ -38,7 +38,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
 
     const result = await post("/picture", dto, true, true);
     if (result) {
-      onClose();
+      onCancel();
     }
   };
 
@@ -115,12 +115,12 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
       key={"picture-upload-drawer"}
       open={open}
       width={800}
-      onClose={onClose}
+      onCancel={onCancel}
       closable={true}
       destroyOnClose={true}
       footer={
         <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onCancel}>Close</Button>
           <Button
             onClick={() => form.submit()}
             type="primary"
@@ -136,7 +136,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
         name="picture-upload-form"
         layout="horizontal"
         onFinish={onFinish}
-        onAbort={onClose}
+        onAbort={onCancel}
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         style={{ width: 600 }}

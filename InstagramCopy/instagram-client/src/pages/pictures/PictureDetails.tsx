@@ -21,7 +21,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [downloadModalOpen, setDownloadModalOpen] = useState<boolean>(false);
 
-  const onClose = () => {
+  const onCancel = () => {
     setOpen(false);
   };
 
@@ -89,13 +89,13 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
     <Modal
       key={"picture-detail-modal"}
       open={open}
-      onClose={onClose}
+      onCancel={onCancel}
       closable={true}
       width={800}
       destroyOnClose={true}
       footer={
         <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-          <Button style={{ marginRight: "10px" }} onClick={onClose}>
+          <Button style={{ marginRight: "10px" }} onClick={onCancel}>
             Close
           </Button>
           <DownloadOutlined

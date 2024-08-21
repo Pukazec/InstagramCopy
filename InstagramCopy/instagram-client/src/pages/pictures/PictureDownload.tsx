@@ -10,7 +10,7 @@ interface Props {
 const PictureDownload: React.FC<Props> = (props: Props) => {
   const { open, setOpen, pictureDetails } = props;
 
-  const onClose = () => {
+  const onCancel = () => {
     setOpen(false);
   };
 
@@ -76,7 +76,7 @@ const PictureDownload: React.FC<Props> = (props: Props) => {
     <Modal
       key={"picture-download-modal"}
       open={open}
-      onClose={onClose}
+      onCancel={onCancel}
       closable={true}
       destroyOnClose={true}
       footer={<></>}
@@ -97,7 +97,7 @@ const PictureDownload: React.FC<Props> = (props: Props) => {
           Download modified image
         </Button>
       </div>
-      <Button style={{ marginTop: "10px" }} onClick={onClose}>
+      <Button style={{ marginTop: "10px" }} onClick={onCancel}>
         Cancel
       </Button>
     </Modal>

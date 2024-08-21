@@ -33,9 +33,9 @@ namespace InstagramCopy.Data.Factory
                 query = (MongoDB.Driver.Linq.IMongoQueryable<Picture>)query.Where(p => p.UploadedAt <= filter.To.Value);
             }
 
-            if (filter.Hashtags.Any())
+            if (filter.HashTags.Any())
             {
-                query = (MongoDB.Driver.Linq.IMongoQueryable<Picture>)query.Where(p => filter.Hashtags.All(ht => p.HashTags.Contains(ht)));
+                query = (MongoDB.Driver.Linq.IMongoQueryable<Picture>)query.Where(p => filter.HashTags.All(ht => p.HashTags.Contains(ht)));
             }
 
             return query.ToList();
