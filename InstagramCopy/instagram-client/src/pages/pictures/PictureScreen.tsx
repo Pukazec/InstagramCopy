@@ -7,6 +7,7 @@ import { BASE64_IMAGE_PREFIX } from "../../config/genericConstants";
 import { useHttpContext } from "../../context/HttpContext";
 import CreatePictureForm from "./CreatePictureForm";
 import PictureDetails from "./PictureDetails";
+import PicturesFilter from "./PicturesFilter";
 
 const PictureScreen: React.FC = () => {
   const { get } = useHttpContext();
@@ -15,6 +16,7 @@ const PictureScreen: React.FC = () => {
   const [pictures, setPictures] = useState<any[]>();
   const [picturesToRender, setPicturesToRender] = useState<JSX.Element[]>();
   const [selectedPicture, setSelectedPicture] = useState<any>();
+  const [filter, setFilter] = useState<string>("");
 
   const [pagination, setPagination] = useState<PaginationConfig>({
     pageSize: 10,
@@ -34,7 +36,7 @@ const PictureScreen: React.FC = () => {
   };
 
   const getPictures = async () => {
-    const result = await get<any[]>("/picture");
+    const result = await get<any[]>(`/picture${filter}`);
     if (result) {
       setPictures(result);
     }
@@ -104,7 +106,7 @@ const PictureScreen: React.FC = () => {
 
   useEffect(() => {
     getPictures();
-  }, [pictureDetailsOpen, createPictureOpen]);
+  }, [pictureDetailsOpen, createPictureOpen, filter]);
 
   useEffect(() => {
     renderPictures();
@@ -112,7 +114,12 @@ const PictureScreen: React.FC = () => {
 
   return (
     <>
-      <Button onClick={() => setCreatePictureOpen(true)}>Open form</Button>
+      <div style={{ display: "inline-flex" }}>
+        <PicturesFilter filter={filter} setFilter={setFilter} />
+        <Button type="primary" onClick={() => setCreatePictureOpen(true)}>
+          Add new Picture
+        </Button>
+      </div>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {picturesToRender}
       </div>
