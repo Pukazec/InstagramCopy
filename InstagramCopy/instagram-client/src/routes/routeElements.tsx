@@ -25,7 +25,7 @@ export const routeElements = [
   },
   // PICTURES
   {
-    path: routes.ROUTE_PICTURES,
+    path: `${routes.ROUTE_PICTURES}/:dynamicParam?`,
     element: <MainLayout children={<PictureScreen />} />,
   },
 ];

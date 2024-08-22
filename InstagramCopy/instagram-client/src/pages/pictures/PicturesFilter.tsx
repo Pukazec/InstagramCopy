@@ -1,5 +1,7 @@
 import { Button, DatePicker, Form, Input, Select } from "antd";
 import moment from "moment";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 interface Props {
   filter: string;
@@ -8,6 +10,7 @@ interface Props {
 
 const PicturesFilter: React.FC<Props> = (props: Props) => {
   const { setFilter } = props;
+  const { dynamicParam } = useParams();
   const [form] = Form.useForm();
 
   const formatTime = (time: string) => {
@@ -46,6 +49,11 @@ const PicturesFilter: React.FC<Props> = (props: Props) => {
     setFilter(queryString);
   };
 
+  useEffect(() => {
+    form.setFieldValue("authorName", dynamicParam);
+    form.submit();
+  }, [dynamicParam]);
+
   return (
     <Form form={form} onFinish={onFinish} name="picture-filter" layout="inline">
       <Form.Item label="From" name="from" style={{ width: 190 }}>
@@ -58,7 +66,7 @@ const PicturesFilter: React.FC<Props> = (props: Props) => {
         <Select mode="tags" />
       </Form.Item>
       <Form.Item label="Author" name="authorName" style={{ width: 250 }}>
-        <Input />
+        <Input disabled={dynamicParam !== undefined} />
       </Form.Item>
       <Form.Item style={{ marginRight: 16 }}>
         <Button type="primary" ghost onClick={() => form.submit()}>

@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import {
   RETURN_URL_LOCAL_STORAGE_KEY,
   TOKEN_LOCAL_STORAGE_KEY,
+  USER_ID_LOCAL_STORAGE_KEY,
+  USER_ROLES_LOCAL_STORAGE_KEY,
   USERNAME_LOCAL_STORAGE_KEY,
 } from "../config/cacheConstants";
 import { routes } from "../routes/paths";
@@ -23,10 +25,10 @@ interface Props {
 }
 
 export interface IUseAuthValues {
-  userEmail?: string;
   username?: string;
+  userId?: string;
+  userRoles?: string[];
   accessToken?: string;
-  refreshToken?: string;
   initializeLogin: (returnUrl?: string) => Promise<void> | void;
   onLoginSuccess: (newAccessToken: string | undefined) => Promise<void> | void;
   logout: () => Promise<void> | void;
@@ -51,6 +53,8 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
   const navigate = useNavigate();
   const [accessToken, setAccessToken] = useState<string | undefined>();
   const [username, setUsername] = useState<string | undefined>(undefined);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [userRoles, setUserRoles] = useState<string[]>();
 
   const initializeLogin = (returnUrl?: string): Promise<void> | void => {
     if (returnUrl && returnUrl !== routes.ROUTE_LOGIN) {
@@ -67,15 +71,30 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
     }
 
     const decodedToken = jwtDecode<any>(newAccessToken);
+    console.log("decodedToken", decodedToken);
     const newUsername =
       decodedToken[
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+      ];
+    const newUserId =
+      decodedToken[
         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+      ];
+    const newUserRoles =
+      decodedToken[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
       ];
 
     if (newUsername !== username) {
       window.localStorage.setItem(USERNAME_LOCAL_STORAGE_KEY, newUsername);
       setUsername(newUsername);
     }
+
+    window.localStorage.setItem(USER_ID_LOCAL_STORAGE_KEY, newUserId);
+    setUserId(newUserId);
+
+    window.localStorage.setItem(USER_ROLES_LOCAL_STORAGE_KEY, newUserRoles);
+    setUserRoles(newUserRoles);
 
     if (newAccessToken !== accessToken) {
       window.localStorage.setItem(TOKEN_LOCAL_STORAGE_KEY, newAccessToken);
@@ -117,6 +136,8 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
       <AuthContext.Provider
         value={{
           username,
+          userId,
+          userRoles,
           accessToken,
           initializeLogin,
           onLoginSuccess,

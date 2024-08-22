@@ -25,11 +25,18 @@ namespace InstagramCopy.Services.UserServices.Identity.Handlers
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
             {
+                var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
-            {
-                new(ClaimTypes.NameIdentifier, user.UserName),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
+                {
+                    new(ClaimTypes.NameIdentifier, user.Id),
+                    new(ClaimTypes.Name, user.UserName),
+                    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+                foreach (var role in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, role));
+                }
 
                 var token = GetToken(authClaims);
 

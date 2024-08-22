@@ -1,8 +1,7 @@
 import {
-  AppstoreOutlined,
   LoginOutlined,
   LogoutOutlined,
-  MailOutlined,
+  PictureOutlined,
   UserAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -29,15 +28,19 @@ const MainLayout: React.FC<Props> = (props: Props) => {
   const renderNavigation = () => {
     const navigationItems = [
       {
-        label: "Navigation One",
-        key: "mail",
-        icon: <MailOutlined />,
+        label: "Pictures",
+        key: "picture",
+        icon: <PictureOutlined />,
         onClick: () => navigate(routes.ROUTE_PICTURES, { replace: true }),
       },
       {
-        label: "Navigation Two",
-        key: "app",
-        icon: <AppstoreOutlined />,
+        label: "User pictures",
+        key: "userPictures",
+        icon: <PictureOutlined />,
+        onClick: () =>
+          navigate(`${routes.ROUTE_PICTURES}/user=${username}`, {
+            replace: true,
+          }),
       },
     ];
 

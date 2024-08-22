@@ -74,9 +74,9 @@ const RegisterScreen: React.FC = () => {
       >
         <Select
           options={[
-            { value: 0, label: "FREE" },
-            { value: 1, label: "PRO" },
-            { value: 2, label: "GOLD" },
+            { value: 1, label: "FREE" },
+            { value: 20, label: "PRO" },
+            { value: 1000, label: "GOLD" },
           ]}
         />
       </Form.Item>

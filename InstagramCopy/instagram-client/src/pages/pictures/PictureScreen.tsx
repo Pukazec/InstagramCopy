@@ -4,6 +4,7 @@ import { PaginationConfig } from "antd/es/pagination";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { BASE64_IMAGE_PREFIX } from "../../config/genericConstants";
+import { useAuthContext } from "../../context/AuthContext";
 import { useHttpContext } from "../../context/HttpContext";
 import CreatePictureForm from "./CreatePictureForm";
 import PictureDetails from "./PictureDetails";
@@ -11,6 +12,7 @@ import PicturesFilter from "./PicturesFilter";
 
 const PictureScreen: React.FC = () => {
   const { get } = useHttpContext();
+  const { username } = useAuthContext();
   const [createPictureOpen, setCreatePictureOpen] = useState<boolean>(false);
   const [pictureDetailsOpen, setPictureDetailsOpen] = useState<boolean>(false);
   const [pictures, setPictures] = useState<any[]>();
@@ -116,7 +118,11 @@ const PictureScreen: React.FC = () => {
     <>
       <div style={{ display: "inline-flex" }}>
         <PicturesFilter filter={filter} setFilter={setFilter} />
-        <Button type="primary" onClick={() => setCreatePictureOpen(true)}>
+        <Button
+          type="primary"
+          disabled={!username}
+          onClick={() => setCreatePictureOpen(true)}
+        >
           Add new Picture
         </Button>
       </div>

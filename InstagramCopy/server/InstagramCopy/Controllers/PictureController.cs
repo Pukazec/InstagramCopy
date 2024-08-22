@@ -24,15 +24,17 @@ namespace InstagramCopy.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "User, Administrator")]
         public async Task<ActionResult> Create([FromBody] CreatePictureCommand command)
         {
-            var user = User.Identity;
+            var user = User.Identity.Name;
+            command.AuthorName = user;
             var result = await Mediator.Send(command);
             return Ok(result);
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "User, Administrator")]
         public async Task<ActionResult> Update([FromBody] UpdatePictureCommand command, Guid id)
         {
             command.Id = id;
@@ -41,6 +43,7 @@ namespace InstagramCopy.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "User, Administrator")]
         public async Task<ActionResult<bool>> Delete(Guid id)
         {
             var result = await Mediator.Send(new DeletePictureCommand(id));

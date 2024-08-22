@@ -47,16 +47,6 @@ namespace InstagramCopy.Controllers
             return Ok(result);
         }
 
-        [HttpPut("updatePlan")]
-        public async Task<IActionResult> UpdatePlan([FromBody] UpdatePlanCommand command)
-        {
-            var userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            command.UserName = userName;
-
-            var result = await Mediator.Send(command);
-            return Ok(result);
-        }
-
         [HttpGet("logout")]
         public async Task<IActionResult> Logout()
         {
