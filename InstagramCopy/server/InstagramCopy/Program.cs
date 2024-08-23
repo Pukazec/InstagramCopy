@@ -1,16 +1,12 @@
-using FluentValidation;
 using InstagramCopy.Data;
 using InstagramCopy.Data.Factory;
 using InstagramCopy.Models.Identity;
-using InstagramCopy.Services.Behaviours;
-using MediatR;
-using MediatR.Pipeline;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
+using Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -72,19 +68,11 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddMediatR(config =>
-{
-    config.AutoRegisterRequestProcessors = true;
-    config.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
-    config.AddOpenBehavior(typeof(RequestPreProcessorBehavior<,>));
-    config.AddOpenBehavior(typeof(RequestPostProcessorBehavior<,>));
-});
-builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
-ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+var settings = new InstagramCopySetupSettings();
 
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true);
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+settings.ConfigureMediatR(builder.Services, builder.Configuration);
+settings.ConfigureValidator(builder.Services);
+settings.ConfigureAutoMapper(builder.Services);
 
 var pictureFactoryOptions = builder.Configuration.GetSection(PictureFactoryOptions.SectionName).Get<PictureFactoryOptions>();
 builder.Services.AddScoped(
