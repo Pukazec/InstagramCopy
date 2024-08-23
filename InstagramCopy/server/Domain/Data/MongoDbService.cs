@@ -1,4 +1,5 @@
 ﻿using InstagramCopy.Models.DbModels;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
 namespace InstagramCopy.Data

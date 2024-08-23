@@ -5,6 +5,10 @@ VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstagramCopy", "InstagramCopy\InstagramCopy.csproj", "{AFA47386-628E-42A8-9D81-82DD69EC7A6E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{43622165-FC09-47F1-8E3B-D75E6446B2BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{274F0696-C3EC-43D2-8D51-700354A42E3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{AFA47386-628E-42A8-9D81-82DD69EC7A6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFA47386-628E-42A8-9D81-82DD69EC7A6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFA47386-628E-42A8-9D81-82DD69EC7A6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43622165-FC09-47F1-8E3B-D75E6446B2BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43622165-FC09-47F1-8E3B-D75E6446B2BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43622165-FC09-47F1-8E3B-D75E6446B2BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43622165-FC09-47F1-8E3B-D75E6446B2BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{274F0696-C3EC-43D2-8D51-700354A42E3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{274F0696-C3EC-43D2-8D51-700354A42E3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{274F0696-C3EC-43D2-8D51-700354A42E3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{274F0696-C3EC-43D2-8D51-700354A42E3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
