@@ -1,10 +1,11 @@
 import { Button, Modal } from "antd";
 import React from "react";
+import { PictureDetailDto } from "./PictureDtos";
 
 interface Props {
   open: boolean;
   setOpen: (newState: boolean) => void;
-  pictureDetails: any;
+  pictureDetails: PictureDetailDto | undefined;
 }
 
 const PictureDownload: React.FC<Props> = (props: Props) => {
@@ -15,7 +16,10 @@ const PictureDownload: React.FC<Props> = (props: Props) => {
   };
 
   const downloadImage = async (downloadModified: boolean) => {
-    const fileName = `${pictureDetails.id}.png`;
+    const fileName = `${pictureDetails?.id}.png`;
+    if (!pictureDetails) {
+      return;
+    }
     const containerElement = document.getElementById(pictureDetails.id);
 
     if (!containerElement) {

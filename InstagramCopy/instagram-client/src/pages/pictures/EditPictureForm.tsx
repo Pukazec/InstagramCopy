@@ -2,11 +2,12 @@ import { Button, Form, Modal, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React from "react";
 import { useHttpContext } from "../../context/HttpContext";
+import { PictureDto } from "./PictureDtos";
 
 interface Props {
   open: boolean;
   setOpen: (newState: boolean) => void;
-  selectedPicture: any | undefined;
+  selectedPicture: PictureDto | undefined;
 }
 
 const EditPictureFrom: React.FC<Props> = (props: Props) => {
@@ -22,7 +23,12 @@ const EditPictureFrom: React.FC<Props> = (props: Props) => {
   const onFinish = async (values: any) => {
     let dto = values;
 
-    const result = await put(`/picture/${selectedPicture.id}`, dto, true, true);
+    const result = await put(
+      `/picture/${selectedPicture?.id}`,
+      dto,
+      true,
+      true
+    );
     if (result) {
       onCancel();
     }

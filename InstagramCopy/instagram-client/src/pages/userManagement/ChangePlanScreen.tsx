@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { USER_ID_LOCAL_STORAGE_KEY } from "../../config/cacheConstants";
 import { useHttpContext } from "../../context/HttpContext";
 import { routes } from "../../routes/paths";
-import { getSubscriptionDisplay } from "./LoginDtos";
+import { getSubscriptionDisplay, RequestConsumptionDto } from "./LoginDtos";
 
 interface Props {
-  selectedUser?: any;
-  setSelectedUserData?: (newState: any) => void;
+  selectedUser?: RequestConsumptionDto;
+  setSelectedUserData?: (newState: RequestConsumptionDto | undefined) => void;
 }
 
 const ChangePlanScreen: React.FC<Props> = (props: Props) => {
@@ -16,10 +16,10 @@ const ChangePlanScreen: React.FC<Props> = (props: Props) => {
   const [form] = Form.useForm();
   const { get, put } = useHttpContext();
   const navigate = useNavigate();
-  const [userData, setUserData] = useState<any>();
+  const [userData, setUserData] = useState<RequestConsumptionDto>();
 
-  const getUserData = async (id: any) => {
-    const result = await get<any>(`/UserManagement/${id}`);
+  const getUserData = async (id: string | null) => {
+    const result = await get<RequestConsumptionDto>(`/UserManagement/${id}`);
     if (result) {
       setUserData(result);
     }
@@ -79,20 +79,6 @@ const ChangePlanScreen: React.FC<Props> = (props: Props) => {
           <span>{userData?.requestsTotal}</span>
         </Col>
       </Row>
-      {/* <Row style={{ width: "90vw" }}>
-        <Col span={8}>
-          <span>Current plan: </span>
-          <span>{getSubscriptionDisplay(userData?.subscriptionPlan)}</span>
-        </Col>
-        <Col span={8}>
-          <span>Used uploads: </span>
-          <span>{userData?.todayUploadCount}</span>
-        </Col>
-        <Col span={8}>
-          <span>Total available uploads: </span>
-          <span>{userData?.requestsTotal}</span>
-        </Col>
-      </Row> */}
       <Row style={{ marginTop: "50px" }}>
         <Col>
           <Form

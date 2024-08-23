@@ -3,16 +3,16 @@ import Modal from "antd/es/modal/Modal";
 import { useEffect, useState } from "react";
 import { useHttpContext } from "../../context/HttpContext";
 import ChangePlanScreen from "./ChangePlanScreen";
-import { getSubscriptionDisplay } from "./LoginDtos";
+import { getSubscriptionDisplay, RequestConsumptionDto } from "./LoginDtos";
 
 const UserManagementScreen: React.FC = () => {
   const { get } = useHttpContext();
-  const [users, setUsers] = useState<any[]>();
+  const [users, setUsers] = useState<RequestConsumptionDto[]>();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [selectedUser, setSelectedUser] = useState<any>();
+  const [selectedUser, setSelectedUser] = useState<RequestConsumptionDto>();
 
   const getUsers = async () => {
-    const result = await get<any[]>(`/UserManagement`);
+    const result = await get<RequestConsumptionDto[]>(`/UserManagement`);
     if (result) {
       setUsers(result);
     }
@@ -34,14 +34,14 @@ const UserManagementScreen: React.FC = () => {
           {
             dataIndex: "subscriptionPlan",
             title: "Subscription plan",
-            render: (data: any) => {
+            render: (data: number | undefined) => {
               return <span>{getSubscriptionDisplay(data)}</span>;
             },
           },
           {
             dataIndex: "desiredSubscriptionPlan",
             title: "Desired subscription plan",
-            render: (data: any) => {
+            render: (data: number | undefined) => {
               return <span>{getSubscriptionDisplay(data)}</span>;
             },
           },
@@ -51,7 +51,10 @@ const UserManagementScreen: React.FC = () => {
         dataSource={users}
         rowSelection={{
           selectedRowKeys,
-          onChange: (newSelectedRowKeys: React.Key[], selectedRows: any[]) => {
+          onChange: (
+            newSelectedRowKeys: React.Key[],
+            selectedRows: RequestConsumptionDto[]
+          ) => {
             const lastSelectedRowKey = newSelectedRowKeys.at(-1);
             if (lastSelectedRowKey) {
               setSelectedRowKeys([lastSelectedRowKey]);
@@ -63,7 +66,7 @@ const UserManagementScreen: React.FC = () => {
         }}
       />
       <Modal
-        open={selectedUser}
+        open={!!selectedUser}
         onCancel={() => setSelectedUser(undefined)}
         footer={null}
       >

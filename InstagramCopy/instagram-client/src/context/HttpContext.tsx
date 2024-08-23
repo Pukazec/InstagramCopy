@@ -252,7 +252,8 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
       });
     } else if (reason.response.status === 500) {
       Modal.error({
-        title: "Internal server error",
+        title: "Error",
+        content: reason.response.data,
       });
     } else if (reason.response.status < 200 || reason.response.status > 299) {
       Modal.error({

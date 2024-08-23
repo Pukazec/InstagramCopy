@@ -8,6 +8,7 @@ import { useAuthContext } from "../../context/AuthContext";
 import { useHttpContext } from "../../context/HttpContext";
 import CreatePictureForm from "./CreatePictureForm";
 import PictureDetails from "./PictureDetails";
+import { PictureDto } from "./PictureDtos";
 import PicturesFilter from "./PicturesFilter";
 
 const PictureScreen: React.FC = () => {
@@ -15,9 +16,9 @@ const PictureScreen: React.FC = () => {
   const { username } = useAuthContext();
   const [createPictureOpen, setCreatePictureOpen] = useState<boolean>(false);
   const [pictureDetailsOpen, setPictureDetailsOpen] = useState<boolean>(false);
-  const [pictures, setPictures] = useState<any[]>();
+  const [pictures, setPictures] = useState<PictureDto[]>();
   const [picturesToRender, setPicturesToRender] = useState<JSX.Element[]>();
-  const [selectedPicture, setSelectedPicture] = useState<any>();
+  const [selectedPicture, setSelectedPicture] = useState<PictureDto>();
   const [filter, setFilter] = useState<string>("");
 
   const [pagination, setPagination] = useState<PaginationConfig>({
@@ -38,7 +39,7 @@ const PictureScreen: React.FC = () => {
   };
 
   const getPictures = async () => {
-    const result = await get<any[]>(`/picture${filter}`);
+    const result = await get<PictureDto[]>(`/picture${filter}`);
     if (result) {
       setPictures(result);
     }
@@ -75,7 +76,6 @@ const PictureScreen: React.FC = () => {
           }}
         >
           <Meta
-            title={picture.tags}
             description={
               <div>
                 <div>
@@ -92,7 +92,7 @@ const PictureScreen: React.FC = () => {
                 <div>
                   <span>Description: </span>
 
-                  {picture.description.length > 20
+                  {picture.description && picture.description.length > 20
                     ? `${picture.description.substring(0, 20)}...`
                     : picture.description}
                 </div>

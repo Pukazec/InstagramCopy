@@ -112,6 +112,3 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
 };
 
 export default LoginScreen;
-function post(arg0: string, values: any) {
-  throw new Error("Function not implemented.");
-}

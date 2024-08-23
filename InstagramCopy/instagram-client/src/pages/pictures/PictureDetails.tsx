@@ -6,17 +6,18 @@ import { BASE64_IMAGE_PREFIX } from "../../config/genericConstants";
 import { useHttpContext } from "../../context/HttpContext";
 import EditPictureForm from "./EditPictureForm";
 import PictureDownload from "./PictureDownload";
+import { PictureDetailDto, PictureDto } from "./PictureDtos";
 
 interface Props {
   open: boolean;
   setOpen: (newState: boolean) => void;
-  selectedPicture: any | undefined;
+  selectedPicture: PictureDto | undefined;
 }
 
 const CreatePictureFrom: React.FC<Props> = (props: Props) => {
   const { open, setOpen, selectedPicture } = props;
   const { get, deleteEntity } = useHttpContext();
-  const [pictureDetails, setPictureDetails] = useState<any>();
+  const [pictureDetails, setPictureDetails] = useState<PictureDetailDto>();
   const [renderedPicture, setRenderedPicture] = useState<JSX.Element>();
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [downloadModalOpen, setDownloadModalOpen] = useState<boolean>(false);
@@ -27,7 +28,9 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
 
   const fetchPicture = async () => {
     if (!selectedPicture) return;
-    const result = await get(`/picture/${selectedPicture.id}`);
+    const result = await get<PictureDetailDto | undefined>(
+      `/picture/${selectedPicture.id}`
+    );
     setPictureDetails(result);
   };
 
@@ -43,30 +46,30 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
     setRenderedPicture(
       <div style={{ display: "flex", alignItems: "flex-start" }}>
         <Image
-          id={pictureDetails.id}
+          id={pictureDetails?.id}
           style={{
-            filter: `sepia(${pictureDetails.sepia}%) blur(${pictureDetails.blur}px)`,
+            filter: `sepia(${pictureDetails?.sepia}%) blur(${pictureDetails?.blur}px)`,
           }}
-          width={pictureDetails.width}
-          height={pictureDetails.height}
-          src={`${BASE64_IMAGE_PREFIX}${pictureDetails.imageData}`}
+          width={pictureDetails?.width}
+          height={pictureDetails?.height}
+          src={`${BASE64_IMAGE_PREFIX}${pictureDetails?.imageData}`}
         />
         <div style={{ marginLeft: "20px" }}>
           <div>
-            <span>Tags: </span> {pictureDetails.hashTags.join(", ")}
+            <span>Tags: </span> {pictureDetails?.hashTags.join(", ")}
           </div>
           <div>
-            <span>Author: </span> {pictureDetails.authorName}
+            <span>Author: </span> {pictureDetails?.authorName}
           </div>
           <div>
             <span>Uploaded at: </span>
 
-            {moment(pictureDetails.uploadedAt).format("HH:mm DD.MM.YY.")}
+            {moment(pictureDetails?.uploadedAt).format("HH:mm DD.MM.YY.")}
           </div>
           <div>
             <span>Description: </span>
 
-            {pictureDetails.description}
+            {pictureDetails?.description}
           </div>
         </div>
       </div>
