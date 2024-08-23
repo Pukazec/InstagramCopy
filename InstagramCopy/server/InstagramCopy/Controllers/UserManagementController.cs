@@ -1,6 +1,7 @@
 ﻿using InstagramCopy.Services.UserServices.Identity.Commands;
 using InstagramCopy.Services.UserServices.Identity.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Services.Services.UserServices.Identity.Commands;
 using System.Security.Claims;
 
 namespace InstagramCopy.Controllers
@@ -27,6 +28,14 @@ namespace InstagramCopy.Controllers
             var userName = User.FindFirstValue(ClaimTypes.Name);
             command.UserName = userName;
 
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+
+        [HttpPut("changePlan")]
+        public async Task<IActionResult> ChangePlan([FromBody] ChangePlanCommand command)
+        {
             var result = await Mediator.Send(command);
             return Ok(result);
         }

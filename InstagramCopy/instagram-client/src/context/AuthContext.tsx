@@ -116,6 +116,8 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
     });
     window.localStorage.removeItem(TOKEN_LOCAL_STORAGE_KEY);
     window.localStorage.removeItem(USERNAME_LOCAL_STORAGE_KEY);
+    window.localStorage.removeItem(USER_ID_LOCAL_STORAGE_KEY);
+    window.localStorage.removeItem(USER_ROLES_LOCAL_STORAGE_KEY);
     window.sessionStorage.clear();
     setAccessToken(undefined);
     setUsername(undefined);

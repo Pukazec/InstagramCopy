@@ -2,6 +2,7 @@ import {
   LoginOutlined,
   LogoutOutlined,
   PictureOutlined,
+  SettingOutlined,
   UserAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -10,6 +11,7 @@ import { Content } from "antd/es/layout/layout";
 import { ItemType, MenuItemType } from "antd/es/menu/interface";
 import { ReactElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { USER_ROLES_LOCAL_STORAGE_KEY } from "../config/cacheConstants";
 import { useAuthContext } from "../context/AuthContext";
 import { routes } from "../routes/paths";
 
@@ -43,6 +45,17 @@ const MainLayout: React.FC<Props> = (props: Props) => {
           }),
       },
     ];
+
+    const userRoles = localStorage.getItem(USER_ROLES_LOCAL_STORAGE_KEY);
+    if (userRoles && userRoles.includes("Administrator")) {
+      navigationItems.push({
+        label: "User management",
+        key: "userManagement",
+        icon: <SettingOutlined />,
+        onClick: () =>
+          navigate(routes.ROUTE_USER_MANAGEMENT, { replace: true }),
+      });
+    }
 
     if (accessToken) {
       navigationItems.push(

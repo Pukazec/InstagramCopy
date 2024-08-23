@@ -38,10 +38,6 @@ namespace Services
         public virtual IServiceCollection ConfigureAutoMapper(IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            //ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
-            //ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
-
-            //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true);
 
             return services;
         }

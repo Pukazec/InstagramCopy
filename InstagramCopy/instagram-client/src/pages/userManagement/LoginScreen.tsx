@@ -55,7 +55,7 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
           label="Username"
           name="username"
           rules={[{ required: true, message: "Please input your username!" }]}
-          initialValue={"pero"}
+          initialValue={"mau"}
         >
           <Input />
         </Form.Item>

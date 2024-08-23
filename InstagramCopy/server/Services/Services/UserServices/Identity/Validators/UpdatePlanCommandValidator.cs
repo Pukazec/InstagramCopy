@@ -3,10 +3,10 @@ using InstagramCopy.Services.UserServices.Identity.Commands;
 
 namespace InstagramCopy.Services.UserServices.Identity.Validators
 {
-    public class UpdatePanCommandValidator : AbstractValidator<UpdatePlanCommand>
+    public class UpdatePlanCommandValidator : AbstractValidator<UpdatePlanCommand>
     {
 
-        public UpdatePanCommandValidator()
+        public UpdatePlanCommandValidator()
         {
             RuleFor(x => x.UserName)
                .NotEmpty();

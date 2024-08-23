@@ -6,4 +6,5 @@ export const routes = {
   ROUTE_REGISTER: "/register",
   ROUTE_CHANGE_PLAN: "/changePlan",
   ROUTE_PICTURES: "/pictures",
+  ROUTE_USER_MANAGEMENT: "/userManagement",
 };
