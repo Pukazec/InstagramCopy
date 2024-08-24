@@ -1,6 +1,7 @@
 import { Button, Form, Modal, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React from "react";
+import { USERNAME_LOCAL_STORAGE_KEY } from "../../config/cacheConstants";
 import { useHttpContext } from "../../context/HttpContext";
 import { PictureDto } from "./PictureDtos";
 
@@ -22,6 +23,7 @@ const EditPictureFrom: React.FC<Props> = (props: Props) => {
 
   const onFinish = async (values: any) => {
     let dto = values;
+    dto.authorName = localStorage.getItem(USERNAME_LOCAL_STORAGE_KEY);
 
     const result = await put(
       `/picture/${selectedPicture?.id}`,
@@ -30,6 +32,7 @@ const EditPictureFrom: React.FC<Props> = (props: Props) => {
       true
     );
     if (result) {
+      form.resetFields();
       onCancel();
     }
   };

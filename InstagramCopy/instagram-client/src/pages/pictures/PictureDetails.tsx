@@ -80,7 +80,7 @@ const CreatePictureFrom: React.FC<Props> = (props: Props) => {
     if (open) {
       fetchPicture();
     }
-  }, [open, selectedPicture]);
+  }, [open, selectedPicture, editModalOpen]);
 
   useEffect(() => {
     if (pictureDetails) {
