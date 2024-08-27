@@ -45,7 +45,7 @@ const UserManagementScreen: React.FC = () => {
               return <span>{getSubscriptionDisplay(data)}</span>;
             },
           },
-          { dataIndex: "todayUploadCount", title: "TodayUploadCount" },
+          { dataIndex: "todayUploadCount", title: "Today upload count" },
           { dataIndex: "requestsTotal", title: "Requests total" },
         ]}
         dataSource={users}

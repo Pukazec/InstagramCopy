@@ -18,14 +18,6 @@ namespace InstagramCopy.Middleware
         {
             var username = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
 
-            using var bodyReader = new StreamReader(
-                context.Request.Body,
-                Encoding.UTF8,
-                detectEncodingFromByteOrderMarks: false,
-                bufferSize: 1024,
-                leaveOpen: true);
-            var requestBody = await bodyReader.ReadToEndAsync();
-
             var queryParams = new StringBuilder();
 
             foreach (var param in context.Request.Query)
@@ -44,7 +36,6 @@ namespace InstagramCopy.Middleware
                 OccurredAt = DateTime.UtcNow,
                 Operation = context.Request.Path,
                 RequestQuery = queryParams.ToString(),
-                RequestBody = requestBody,
             };
 
             dbContext.InstagramLogs.Add(instagramLog);
