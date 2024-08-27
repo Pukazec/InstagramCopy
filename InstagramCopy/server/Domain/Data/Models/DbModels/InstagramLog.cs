@@ -14,7 +14,5 @@ namespace Domain.Data.Models.DbModels
         public string Operation { get; set; } = string.Empty;
 
         public string? RequestQuery { get; set; }
-
-        public string? RequestBody { get; set; }
     }
 }
