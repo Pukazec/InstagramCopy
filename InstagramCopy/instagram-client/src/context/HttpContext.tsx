@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Modal, notification, Spin } from "antd";
-import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from "axios";
+import { Modal, notification, Spin } from 'antd';
+import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import {
   createContext,
   FC,
@@ -8,10 +8,10 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { TOKEN_LOCAL_STORAGE_KEY } from "../config/cacheConstants";
-import { useAuthContext } from "./AuthContext";
-import { localhost, RequestType } from "./HttpContextModels";
+} from 'react';
+import { TOKEN_LOCAL_STORAGE_KEY } from '../config/cacheConstants';
+import { useAuthContext } from './AuthContext';
+import { RequestType } from './HttpContextModels';
 
 interface Props {
   children: ReactElement | null;
@@ -51,7 +51,7 @@ const defaultState: IUseHttpValues = {
     showLoader?: boolean,
     headers?: RawAxiosRequestHeaders
   ) => {
-    throw new Error("Function not implemented!");
+    throw new Error('Function not implemented!');
   },
   post: (
     url: string,
@@ -60,7 +60,7 @@ const defaultState: IUseHttpValues = {
     showNotification?: boolean,
     headers?: RawAxiosRequestHeaders
   ) => {
-    throw new Error("Function not implemented!");
+    throw new Error('Function not implemented!');
   },
   put: (
     url: string,
@@ -69,17 +69,17 @@ const defaultState: IUseHttpValues = {
     showNotification?: boolean,
     headers?: RawAxiosRequestHeaders
   ) => {
-    throw new Error("Function not implemented!");
+    throw new Error('Function not implemented!');
   },
   deleteEntity: (
     url: string,
     showLoader?: boolean,
     headers?: RawAxiosRequestHeaders
   ) => {
-    throw new Error("Function not implemented!");
+    throw new Error('Function not implemented!');
   },
   setLoading: (newState: boolean) => {
-    throw new Error("Function not implemented!");
+    throw new Error('Function not implemented!');
   },
 };
 
@@ -182,30 +182,34 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
     body?: any,
     headers?: RawAxiosRequestHeaders
   ): Promise<any> {
+    if (!process.env.REACT_APP_API_HOST) {
+      return;
+    }
+
     const currentAccessToken = window.localStorage.getItem(
       TOKEN_LOCAL_STORAGE_KEY
     );
     switch (requestType) {
       case RequestType.get:
         return await axios.get<T>(
-          `${localhost}${url}`,
+          `${process.env.REACT_APP_API_HOST}${url}`,
           getGenericRequestConfig(currentAccessToken!, headers)
         );
       case RequestType.post:
         return await axios.post<T>(
-          `${localhost}${url}`,
+          `${process.env.REACT_APP_API_HOST}${url}`,
           body,
           getGenericRequestConfig(currentAccessToken!, headers)
         );
       case RequestType.put:
         return await axios.put<T>(
-          `${localhost}${url}`,
+          `${process.env.REACT_APP_API_HOST}${url}`,
           body,
           getGenericRequestConfig(currentAccessToken!, headers)
         );
       case RequestType.delete:
         return await axios.delete<T>(
-          `${localhost}${url}`,
+          `${process.env.REACT_APP_API_HOST}${url}`,
           getGenericRequestConfig(currentAccessToken!, headers)
         );
       default:
@@ -220,12 +224,12 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
     const dto: T = response.data;
     if (!dto) {
       Modal.error({
-        title: "Error!",
+        title: 'Error!',
       });
     } else {
       if (showNotification) {
         notification.success({
-          message: "Success!",
+          message: 'Success!',
           duration: 3,
         });
       }
@@ -237,27 +241,27 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
     reason: any,
     initializeLogin: (returnUrl?: string) => Promise<void> | void
   ): void => {
-    if (reason.code === "ERR_NETWORK" || reason.response.status === 401) {
-      console.log("error", reason);
+    if (reason.code === 'ERR_NETWORK' || reason.response.status === 401) {
+      console.log('error', reason);
       initializeLogin(window.location.pathname);
     } else if (reason.response.status === 403) {
       Modal.error({
-        title: "Unauthorized",
+        title: 'Unauthorized',
         content: reason.response.data,
       });
     } else if (reason.response.status === 409) {
       Modal.error({
-        title: "Concurrent modification",
+        title: 'Concurrent modification',
         content: reason.response.data.message,
       });
     } else if (reason.response.status === 500) {
       Modal.error({
-        title: "Error",
+        title: 'Error',
         content: reason.response.data,
       });
     } else if (reason.response.status < 200 || reason.response.status > 299) {
       Modal.error({
-        title: "Default http error",
+        title: 'Default http error',
         content: reason.response.data.message,
       });
     }
@@ -276,7 +280,7 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
       <Spin
         spinning={loading}
         size="large"
-        style={{ zIndex: "1001", maxHeight: "100%" }}
+        style={{ zIndex: '1001', maxHeight: '100%' }}
       >
         <HttpContext.Provider
           value={{

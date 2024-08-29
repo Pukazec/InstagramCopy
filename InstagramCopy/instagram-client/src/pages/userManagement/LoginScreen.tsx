@@ -1,10 +1,9 @@
-import { GithubOutlined } from "@ant-design/icons";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import { Button, Form, Input, message } from "antd";
-import axios from "axios";
-import React from "react";
-import { useAuthContext } from "../../context/AuthContext";
-import { useHttpContext } from "../../context/HttpContext";
+import { GithubOutlined } from '@ant-design/icons';
+import { Button, Form, Input, message } from 'antd';
+import axios from 'axios';
+import React from 'react';
+import { useAuthContext } from '../../context/AuthContext';
+import { useHttpContext } from '../../context/HttpContext';
 
 interface Props {}
 
@@ -14,28 +13,28 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
   const { onLoginSuccess } = useAuthContext();
 
   const handleGithubLogin = () => {
-    window.location.href = "http://localhost:3000/auth/github";
+    window.location.href = 'http://localhost:3000/auth/github';
   };
 
   const handleLoginSuccess = async (credentialResponse: any) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/google", {
+      const res = await axios.post('http://localhost:5000/api/auth/google', {
         tokenId: credentialResponse.credential,
       });
-      message.success("Login successful!");
+      message.success('Login successful!');
       console.log(res.data);
     } catch (error) {
-      message.error("Login failed!");
+      message.error('Login failed!');
       console.error(error);
     }
   };
 
   const handleLoginFailure = () => {
-    message.error("Login failed!");
+    message.error('Login failed!');
   };
 
   const onLocalLoginFinish = async (values: any) => {
-    const result = await post<string>("/Identity/login", values);
+    const result = await post<string>('/Identity/login', values);
     onLoginSuccess(result);
   };
 
@@ -54,8 +53,8 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
         <Form.Item
           label="Username"
           name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
-          initialValue={"mau"}
+          rules={[{ required: true, message: 'Please input your username!' }]}
+          initialValue={'mau'}
         >
           <Input />
         </Form.Item>
@@ -63,8 +62,8 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-          initialValue={"Pa$$w0rd"}
+          rules={[{ required: true, message: 'Please input your password!' }]}
+          initialValue={'Pa$$w0rd'}
         >
           <Input.Password />
         </Form.Item>
@@ -76,31 +75,17 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
         </Form.Item>
       </Form>
 
-      <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <GoogleLogin
-            onSuccess={handleLoginSuccess}
-            onError={handleLoginFailure}
-          />
-        </div>
-      </GoogleOAuthProvider>
       <div
         style={{
-          marginTop: "3px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          marginTop: '3px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <Button
           style={{
-            fontSize: "15px",
+            fontSize: '15px',
           }}
         >
           <GithubOutlined onClick={handleGithubLogin} />
