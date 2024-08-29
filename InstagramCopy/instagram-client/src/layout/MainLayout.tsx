@@ -1,4 +1,5 @@
 import {
+  ContainerOutlined,
   LoginOutlined,
   LogoutOutlined,
   PictureOutlined,
@@ -48,13 +49,22 @@ const MainLayout: React.FC<Props> = (props: Props) => {
 
     const userRoles = localStorage.getItem(USER_ROLES_LOCAL_STORAGE_KEY);
     if (userRoles && userRoles.includes("Administrator")) {
-      navigationItems.push({
-        label: "User management",
-        key: "userManagement",
-        icon: <SettingOutlined />,
-        onClick: () =>
-          navigate(routes.ROUTE_USER_MANAGEMENT, { replace: true }),
-      });
+      navigationItems.push(
+        {
+          label: "User management",
+          key: "userManagement",
+          icon: <SettingOutlined />,
+          onClick: () =>
+            navigate(routes.ROUTE_USER_MANAGEMENT, { replace: true }),
+        },
+        {
+          label: "Log",
+          key: "instagramLog",
+          icon: <ContainerOutlined />,
+          onClick: () =>
+            navigate(routes.ROUTE_INSTAGRAM_LOG, { replace: true }),
+        }
+      );
     }
 
     if (accessToken) {

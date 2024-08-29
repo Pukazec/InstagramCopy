@@ -1,4 +1,5 @@
 import MainLayout from "../layout/MainLayout";
+import InstagramLogScreen from "../pages/instagramLog/InstagramLogScreen";
 import PictureScreen from "../pages/pictures/PictureScreen";
 import ChangePlanScreen from "../pages/userManagement/ChangePlanScreen";
 import LoginScreen from "../pages/userManagement/LoginScreen";
@@ -20,11 +21,6 @@ export const routeElements = [
     path: routes.ROUTE_REGISTER,
     element: <MainLayout children={<RegisterScreen />} />,
   },
-  // PICTURES
-  {
-    path: `${routes.ROUTE_PICTURES}/:dynamicParam?`,
-    element: <MainLayout children={<PictureScreen />} />,
-  },
   // USER MANAGEMENT
   {
     path: routes.ROUTE_CHANGE_PLAN,
@@ -33,5 +29,15 @@ export const routeElements = [
   {
     path: routes.ROUTE_USER_MANAGEMENT,
     element: <MainLayout children={<UserManagementScreen />} />,
+  },
+  // LOG
+  {
+    path: routes.ROUTE_INSTAGRAM_LOG,
+    element: <MainLayout children={<InstagramLogScreen />} />,
+  },
+  // PICTURES
+  {
+    path: `${routes.ROUTE_PICTURES}/:dynamicParam?`,
+    element: <MainLayout children={<PictureScreen />} />,
   },
 ];

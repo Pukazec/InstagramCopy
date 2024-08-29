@@ -1,5 +1,6 @@
 using InstagramCopy.Data;
 using InstagramCopy.Data.Factory;
+using InstagramCopy.Middleware;
 using InstagramCopy.Models.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -114,6 +115,7 @@ app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseInstagramLogging();
 
 app.MapControllers();
 
