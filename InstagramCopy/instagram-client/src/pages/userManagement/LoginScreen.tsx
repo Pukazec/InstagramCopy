@@ -1,10 +1,9 @@
 import { GithubOutlined } from "@ant-design/icons";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import { Button, Form, Input, message } from "antd";
-import axios from "axios";
+import { Button, Form, Input } from "antd";
 import React from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { useHttpContext } from "../../context/HttpContext";
+import { localhost } from "../../context/HttpContextModels";
 
 interface Props {}
 
@@ -14,24 +13,7 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
   const { onLoginSuccess } = useAuthContext();
 
   const handleGithubLogin = () => {
-    window.location.href = "http://localhost:3000/auth/github";
-  };
-
-  const handleLoginSuccess = async (credentialResponse: any) => {
-    try {
-      const res = await axios.post("http://localhost:5000/api/auth/google", {
-        tokenId: credentialResponse.credential,
-      });
-      message.success("Login successful!");
-      console.log(res.data);
-    } catch (error) {
-      message.error("Login failed!");
-      console.error(error);
-    }
-  };
-
-  const handleLoginFailure = () => {
-    message.error("Login failed!");
+    window.location.href = `${localhost}/GitHub/login`;
   };
 
   const onLocalLoginFinish = async (values: any) => {
@@ -76,20 +58,6 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
         </Form.Item>
       </Form>
 
-      <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <GoogleLogin
-            onSuccess={handleLoginSuccess}
-            onError={handleLoginFailure}
-          />
-        </div>
-      </GoogleOAuthProvider>
       <div
         style={{
           marginTop: "3px",
@@ -99,11 +67,12 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
         }}
       >
         <Button
+          onClick={handleGithubLogin}
           style={{
             fontSize: "15px",
           }}
         >
-          <GithubOutlined onClick={handleGithubLogin} />
+          <GithubOutlined />
           Login with GitHub
         </Button>
       </div>
