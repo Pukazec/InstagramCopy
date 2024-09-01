@@ -1,15 +1,13 @@
-import { Button, Card, Pagination } from "antd";
-import Meta from "antd/es/card/Meta";
-import { PaginationConfig } from "antd/es/pagination";
-import moment from "moment";
-import { useEffect, useState } from "react";
-import { BASE64_IMAGE_PREFIX } from "../../config/genericConstants";
-import { useAuthContext } from "../../context/AuthContext";
-import { useHttpContext } from "../../context/HttpContext";
-import CreatePictureForm from "./CreatePictureForm";
-import PictureDetails from "./PictureDetails";
-import { PictureDto } from "./PictureDtos";
-import PicturesFilter from "./PicturesFilter";
+import { Button, Pagination } from 'antd';
+import { PaginationConfig } from 'antd/es/pagination';
+import { useEffect, useState } from 'react';
+import ImageCard from '../../components/ImageCard';
+import { useAuthContext } from '../../context/AuthContext';
+import { useHttpContext } from '../../context/HttpContext';
+import CreatePictureForm from './CreatePictureForm';
+import PictureDetails from './PictureDetails';
+import { PictureDto } from './PictureDtos';
+import PicturesFilter from './PicturesFilter';
 
 const PictureScreen: React.FC = () => {
   const { get } = useHttpContext();
@@ -19,13 +17,13 @@ const PictureScreen: React.FC = () => {
   const [pictures, setPictures] = useState<PictureDto[]>();
   const [picturesToRender, setPicturesToRender] = useState<JSX.Element[]>();
   const [selectedPicture, setSelectedPicture] = useState<PictureDto>();
-  const [filter, setFilter] = useState<string>("");
+  const [filter, setFilter] = useState<string>('');
 
   const [pagination, setPagination] = useState<PaginationConfig>({
     pageSize: 10,
     pageSizeOptions: [4, 10, 20, 40, 80],
     showSizeChanger: true,
-    size: "small",
+    size: 'small',
     current: 1,
   });
 
@@ -57,49 +55,11 @@ const PictureScreen: React.FC = () => {
 
     const renderedPictures: JSX.Element[] = currentPictures.map((picture) => {
       return (
-        <Card
-          key={picture.id}
-          hoverable
-          style={{ width: 245, margin: "10px" }}
-          cover={
-            <img
-              style={{
-                filter: `sepia(${picture.sepia}%) blur(${picture.blur}px)`,
-              }}
-              alt={picture.id}
-              src={`${BASE64_IMAGE_PREFIX}${picture.imageData}`}
-            />
-          }
-          onClick={() => {
-            setSelectedPicture(picture);
-            setPictureDetailsOpen(true);
-          }}
-        >
-          <Meta
-            description={
-              <div>
-                <div>
-                  <span>Tags: </span> {picture.hashTags.join(", ")}
-                </div>
-                <div>
-                  <span>Author: </span> {picture.authorName}
-                </div>
-                <div>
-                  <span>Uploaded at: </span>
-
-                  {moment(picture.uploadedAt).format("HH:mm DD.MM.YY.")}
-                </div>
-                <div>
-                  <span>Description: </span>
-
-                  {picture.description && picture.description.length > 20
-                    ? `${picture.description.substring(0, 20)}...`
-                    : picture.description}
-                </div>
-              </div>
-            }
-          />
-        </Card>
+        <ImageCard
+          picture={picture}
+          setSelectedPicture={setSelectedPicture}
+          setPictureDetailsOpen={setPictureDetailsOpen}
+        />
       );
     });
 
@@ -116,7 +76,7 @@ const PictureScreen: React.FC = () => {
 
   return (
     <>
-      <div style={{ display: "inline-flex" }}>
+      <div style={{ display: 'inline-flex' }}>
         <PicturesFilter filter={filter} setFilter={setFilter} />
         <Button
           type="primary"
@@ -126,7 +86,7 @@ const PictureScreen: React.FC = () => {
           Add new Picture
         </Button>
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {picturesToRender}
       </div>
       <Pagination {...pagination} onChange={handlePaginationChange} />
