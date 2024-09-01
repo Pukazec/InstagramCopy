@@ -1,8 +1,9 @@
 using InstagramCopy.Data;
 using InstagramCopy.Data.Factory;
+using InstagramCopy.Middleware;
 using InstagramCopy.Models.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
@@ -123,12 +124,32 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     IdentityModelEventSource.ShowPII = true;
 }
+else
+{
+    app.UseExceptionHandler(appBuilder =>
+    {
+        appBuilder.Run(async context =>
+        {
+            var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+            if (exceptionHandlerFeature != null)
+            {
+                var exception = exceptionHandlerFeature.Error;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(exception.Message);
+            }
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync("An unexpected fault occurred. Try again later.");
+        });
+    });
+}
 
 app.UseCors();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseInstagramLogging();
 
 app.MapControllers();
 

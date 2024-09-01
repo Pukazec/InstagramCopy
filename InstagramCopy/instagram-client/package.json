@@ -4,12 +4,11 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
-    "@react-oauth/google": "^0.12.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.20.0",
-    "axios": "^1.7.3",
+    "axios": "^1.7.5",
     "ig-copy-fe": "file:",
     "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
@@ -21,8 +20,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "env-cmd -f .env.local react-scripts start",
     "build": "react-scripts build",
+    "build:docker": "env-cmd -f .env.docker react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -43,5 +43,20 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "endOfLine": "lf",
+    "arrowParens": "always",
+    "htmlWhitespaceSensitivity": "css",
+    "printWidth": 80,
+    "proseWrap": "preserve",
+    "quoteProps": "as-needed"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
   }
 }

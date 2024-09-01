@@ -1,4 +1,5 @@
-﻿using InstagramCopy.Models.Identity;
+﻿using Domain.Data.Models.DbModels;
+using InstagramCopy.Models.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,6 @@ namespace InstagramCopy.Data
         {
         }
 
-        public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<InstagramLog> InstagramLogs { get; set; }
     }
 }

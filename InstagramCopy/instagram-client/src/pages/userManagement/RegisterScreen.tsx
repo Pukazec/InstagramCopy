@@ -1,7 +1,7 @@
-import { Button, Form, Input, Select } from "antd";
-import { useNavigate } from "react-router-dom";
-import { useHttpContext } from "../../context/HttpContext";
-import { routes } from "../../routes/paths";
+import { Button, Form, Input, Select } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { useHttpContext } from '../../context/HttpContext';
+import { routes } from '../../routes/paths';
 
 const RegisterScreen: React.FC = () => {
   const [form] = Form.useForm();
@@ -9,7 +9,7 @@ const RegisterScreen: React.FC = () => {
   const navigate = useNavigate();
 
   const createUser = async (values: any) => {
-    const result = await post("/Identity/register", values);
+    const result = await post('/Identity/register', values);
     if (result) {
       navigate(routes.ROUTE_LOGIN, { replace: true });
     }
@@ -27,7 +27,7 @@ const RegisterScreen: React.FC = () => {
       <Form.Item
         label="Username"
         name="username"
-        rules={[{ required: true, message: "Please input your username!" }]}
+        rules={[{ required: true, message: 'Please input your username!' }]}
       >
         <Input />
       </Form.Item>
@@ -35,36 +35,36 @@ const RegisterScreen: React.FC = () => {
       <Form.Item
         label="Email"
         name="email"
-        rules={[{ required: true, message: "Please input your username!" }]}
+        rules={[{ required: true, message: 'Please input your username!' }]}
       >
         <Input />
       </Form.Item>
 
       <Form.Item label="Password" name="password" rules={[{ required: true }]}>
-        <Input />
+        <Input.Password />
       </Form.Item>
 
       <Form.Item
         label="Confirm Password"
         name="password2"
-        dependencies={["password"]}
+        dependencies={['password']}
         rules={[
           {
             required: true,
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
-              if (!value || getFieldValue("password") === value) {
+              if (!value || getFieldValue('password') === value) {
                 return Promise.resolve();
               }
               return Promise.reject(
-                new Error("The new password that you entered do not match!")
+                new Error('The new password that you entered do not match!')
               );
             },
           }),
         ]}
       >
-        <Input />
+        <Input.Password />
       </Form.Item>
 
       <Form.Item
@@ -74,9 +74,9 @@ const RegisterScreen: React.FC = () => {
       >
         <Select
           options={[
-            { value: 1, label: "FREE" },
-            { value: 20, label: "PRO" },
-            { value: 1000, label: "GOLD" },
+            { value: 1, label: 'FREE' },
+            { value: 20, label: 'PRO' },
+            { value: 1000, label: 'GOLD' },
           ]}
         />
       </Form.Item>

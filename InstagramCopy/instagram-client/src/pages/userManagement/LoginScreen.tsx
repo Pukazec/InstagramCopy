@@ -1,9 +1,8 @@
-import { GithubOutlined } from "@ant-design/icons";
-import { Button, Form, Input } from "antd";
-import React from "react";
-import { useAuthContext } from "../../context/AuthContext";
-import { useHttpContext } from "../../context/HttpContext";
-import { localhost } from "../../context/HttpContextModels";
+import { GithubOutlined } from '@ant-design/icons';
+import { Button, Form, Input } from 'antd';
+import React from 'react';
+import { useAuthContext } from '../../context/AuthContext';
+import { useHttpContext } from '../../context/HttpContext';
 
 interface Props {}
 
@@ -13,11 +12,14 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
   const { onLoginSuccess } = useAuthContext();
 
   const handleGithubLogin = () => {
-    window.location.href = `${localhost}/GitHub/login`;
+    if (!process.env.REACT_APP_API_HOST) {
+      return;
+    }
+    window.location.href = `${process.env.REACT_APP_API_HOST}/GitHub/login`;
   };
 
   const onLocalLoginFinish = async (values: any) => {
-    const result = await post<string>("/Identity/login", values);
+    const result = await post<string>('/Identity/login', values);
     onLoginSuccess(result);
   };
 
@@ -36,8 +38,7 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
         <Form.Item
           label="Username"
           name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
-          initialValue={"mau"}
+          rules={[{ required: true, message: 'Please input your username!' }]}
         >
           <Input />
         </Form.Item>
@@ -45,8 +46,7 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-          initialValue={"Pa$$w0rd"}
+          rules={[{ required: true, message: 'Please input your password!' }]}
         >
           <Input.Password />
         </Form.Item>
@@ -60,16 +60,16 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
 
       <div
         style={{
-          marginTop: "3px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          marginTop: '3px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <Button
           onClick={handleGithubLogin}
           style={{
-            fontSize: "15px",
+            fontSize: '15px',
           }}
         >
           <GithubOutlined />

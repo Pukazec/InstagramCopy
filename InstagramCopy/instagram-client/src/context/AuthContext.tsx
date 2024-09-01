@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import {
   createContext,
   FC,
@@ -8,17 +8,16 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { useNavigate } from "react-router-dom";
+} from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   RETURN_URL_LOCAL_STORAGE_KEY,
   TOKEN_LOCAL_STORAGE_KEY,
   USER_ID_LOCAL_STORAGE_KEY,
   USER_ROLES_LOCAL_STORAGE_KEY,
   USERNAME_LOCAL_STORAGE_KEY,
-} from "../config/cacheConstants";
-import { routes } from "../routes/paths";
-import { localhost } from "./HttpContextModels";
+} from '../config/cacheConstants';
+import { routes } from '../routes/paths';
 
 interface Props {
   children: ReactElement | null;
@@ -36,13 +35,13 @@ export interface IUseAuthValues {
 
 const defaultState: IUseAuthValues = {
   initializeLogin: (returnUrl?: string) => {
-    throw new Error("Function not implemented!");
+    throw new Error('Function not implemented!');
   },
   onLoginSuccess: (newAccessToken: string | undefined) => {
-    throw new Error("Function not implemented!");
+    throw new Error('Function not implemented!');
   },
   logout: () => {
-    throw new Error("Function not implemented!");
+    throw new Error('Function not implemented!');
   },
 };
 
@@ -71,18 +70,17 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
     }
 
     const decodedToken = jwtDecode<any>(newAccessToken);
-    console.log("decodedToken", decodedToken);
     const newUsername =
       decodedToken[
-        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
       ];
     const newUserId =
       decodedToken[
-        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
       ];
     const newUserRoles =
       decodedToken[
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
       ];
 
     if (newUsername !== username) {
@@ -111,9 +109,10 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
   };
 
   const logout = async (): Promise<void> => {
-    await axios.get(`${localhost}/Identity/logout`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+    if (!process.env.REACT_APP_API_HOST) {
+      return;
+    }
+
     window.localStorage.removeItem(TOKEN_LOCAL_STORAGE_KEY);
     window.localStorage.removeItem(USERNAME_LOCAL_STORAGE_KEY);
     window.localStorage.removeItem(USER_ID_LOCAL_STORAGE_KEY);
@@ -121,6 +120,13 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
     window.sessionStorage.clear();
     setAccessToken(undefined);
     setUsername(undefined);
+    try {
+      await axios.get(`${process.env.REACT_APP_API_HOST}/Identity/logout`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+    } catch (error: any) {
+      console.log('error on logout', error);
+    }
     return navigate(routes.ROUTE_LOGIN);
   };
 
