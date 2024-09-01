@@ -3,6 +3,7 @@ using InstagramCopy.Data.Factory;
 using InstagramCopy.Middleware;
 using InstagramCopy.Models.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
@@ -40,14 +41,6 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
-})
-.AddGoogle(options =>
-{
-    IConfigurationSection googleAuthNSection =
-        builder.Configuration.GetSection("Authentication:Google");
-
-    options.ClientId = googleAuthNSection["ClientId"];
-    options.ClientSecret = googleAuthNSection["ClientSecret"];
 })
 .AddGitHub(options =>
 {
@@ -108,6 +101,25 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     IdentityModelEventSource.ShowPII = true;
+}
+else
+{
+    app.UseExceptionHandler(appBuilder =>
+    {
+        appBuilder.Run(async context =>
+        {
+            var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+            if (exceptionHandlerFeature != null)
+            {
+                var exception = exceptionHandlerFeature.Error;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(exception.Message);
+            }
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync("An unexpected fault occurred. Try again later.");
+        });
+    });
 }
 
 app.UseCors();

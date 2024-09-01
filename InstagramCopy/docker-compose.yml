@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    image: instagramCopy/api
+    ports:
+      - "5443:8080"
+    depends_on:
+      - mssql
+      - mongodb
+    environment:
+      - ConnectionStrings__SqlServer=Server=mssql;Database=YourDbName;User Id=sa;Password=YourStrongPassword;
+      - ConnectionStrings__MongoDb=mongodb://mongodb:27017/YourDbName
+      - FileSystemRoot=/app/data
+
+  frontend:
+    image: instagramCopy/web
+    ports:
+      - "80:4443"
+    depends_on:
+      - backend
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password1!
+
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"

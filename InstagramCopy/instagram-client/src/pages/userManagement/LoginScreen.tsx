@@ -1,6 +1,5 @@
 import { GithubOutlined } from '@ant-design/icons';
-import { Button, Form, Input, message } from 'antd';
-import axios from 'axios';
+import { Button, Form, Input } from 'antd';
 import React from 'react';
 import { useAuthContext } from '../../context/AuthContext';
 import { useHttpContext } from '../../context/HttpContext';
@@ -14,23 +13,6 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
 
   const handleGithubLogin = () => {
     window.location.href = 'http://localhost:3000/auth/github';
-  };
-
-  const handleLoginSuccess = async (credentialResponse: any) => {
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/google', {
-        tokenId: credentialResponse.credential,
-      });
-      message.success('Login successful!');
-      console.log(res.data);
-    } catch (error) {
-      message.error('Login failed!');
-      console.error(error);
-    }
-  };
-
-  const handleLoginFailure = () => {
-    message.error('Login failed!');
   };
 
   const onLocalLoginFinish = async (values: any) => {
@@ -54,7 +36,6 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
           label="Username"
           name="username"
           rules={[{ required: true, message: 'Please input your username!' }]}
-          initialValue={'mau'}
         >
           <Input />
         </Form.Item>
@@ -63,7 +44,6 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
           label="Password"
           name="password"
           rules={[{ required: true, message: 'Please input your password!' }]}
-          initialValue={'Pa$$w0rd'}
         >
           <Input.Password />
         </Form.Item>

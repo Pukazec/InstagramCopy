@@ -252,7 +252,7 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
     } else if (reason.response.status === 409) {
       Modal.error({
         title: 'Concurrent modification',
-        content: reason.response.data.message,
+        content: reason.response.data,
       });
     } else if (reason.response.status === 500) {
       Modal.error({
@@ -262,7 +262,7 @@ export const HttpContextProvider: FC<Props> = (props: Props) => {
     } else if (reason.response.status < 200 || reason.response.status > 299) {
       Modal.error({
         title: 'Default http error',
-        content: reason.response.data.message,
+        content: reason.response.data,
       });
     }
   };
@@ -310,8 +310,6 @@ const getGenericRequestConfig = (
     return {
       headers: {
         ...initialHeaders,
-        // Accept: "application/json",
-        // "Content-Type": "application/json",
       },
     };
   } else {

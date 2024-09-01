@@ -32,7 +32,7 @@ namespace InstagramCopy.Services.UserServices.Identity.Validators
 
         private void CheckEmail(string? value)
         {
-            if (IsValidEmailFormat(value))
+            if (!IsValidEmailFormat(value))
             {
                 throw new ValidationException($"Sent Email ({value}) is not in a valid format.");
             }

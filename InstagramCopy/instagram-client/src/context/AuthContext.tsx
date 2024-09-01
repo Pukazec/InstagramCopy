@@ -70,7 +70,6 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
     }
 
     const decodedToken = jwtDecode<any>(newAccessToken);
-    console.log('decodedToken', decodedToken);
     const newUsername =
       decodedToken[
         'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
@@ -114,9 +113,6 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
       return;
     }
 
-    await axios.get(`${process.env.REACT_APP_API_HOST}/Identity/logout`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
     window.localStorage.removeItem(TOKEN_LOCAL_STORAGE_KEY);
     window.localStorage.removeItem(USERNAME_LOCAL_STORAGE_KEY);
     window.localStorage.removeItem(USER_ID_LOCAL_STORAGE_KEY);
@@ -124,6 +120,13 @@ export const AuthContextProvider: FC<Props> = (props: Props) => {
     window.sessionStorage.clear();
     setAccessToken(undefined);
     setUsername(undefined);
+    try {
+      await axios.get(`${process.env.REACT_APP_API_HOST}/Identity/logout`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+    } catch (error: any) {
+      console.log('error on logout', error);
+    }
     return navigate(routes.ROUTE_LOGIN);
   };
 

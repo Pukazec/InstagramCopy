@@ -20,8 +20,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "env-cmd -f .env.local react-scripts start",
     "build": "react-scripts build",
+    "build:docker": "env-cmd -f .env.docker react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -54,5 +55,8 @@
     "printWidth": 80,
     "proseWrap": "preserve",
     "quoteProps": "as-needed"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
   }
 }
