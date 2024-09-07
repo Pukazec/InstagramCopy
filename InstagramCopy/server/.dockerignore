@@ -1,0 +1,36 @@
+# Ignore build results and temporary files
+bin/
+obj/
+*.log
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.suo
+*.ncb
+*.sdf
+*.dbmdl
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+# Ignore global tools and caches
+*.dll
+*.exe
+*.pdb
+*.cache
+
+# Ignore ASP.NET temporary files
+wwwroot/
+*.db
+*.sql

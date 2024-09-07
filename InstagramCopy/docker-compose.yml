@@ -8,10 +8,6 @@ services:
     depends_on:
       - mssql
       - mongodb
-    environment:
-      - ConnectionStrings__SqlServer=Server=mssql;Database=YourDbName;User Id=sa;Password=YourStrongPassword;
-      - ConnectionStrings__MongoDb=mongodb://mongodb:27017/YourDbName
-      - FileSystemRoot=/app/data
 
   frontend:
     image: instagramCopy/web
@@ -19,6 +15,11 @@ services:
       - "80:4443"
     depends_on:
       - backend
+
+  worker:
+    image: instagramCopy/worker
+    depends_on:
+      - mssql
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
