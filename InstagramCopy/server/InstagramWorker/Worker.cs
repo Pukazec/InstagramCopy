@@ -1,4 +1,5 @@
 using InstagramCopy.Data;
+using InstagramWorker.Aspects;
 using InstagramWorker.Options;
 using Microsoft.Extensions.Options;
 
@@ -23,6 +24,11 @@ namespace InstagramWorker
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogServiceStart("Services Worker");
+
+            using var scope = _serviceProvider.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            DbContextProvider.DbContext = dbContext;
 
             try
             {
@@ -60,38 +66,27 @@ namespace InstagramWorker
             }
         }
 
+        [LogMethodAspect]
         private async Task DoWork(CancellationToken cancellationToken)
         {
             var now = DateTime.Now;
 
-            _logger.LogProcessing("Worker Jobs");
-
             using var scope = _serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            try
-            {
-                var users = dbContext.Users;
+            var users = dbContext.Users;
 
-                foreach (var user in users)
+            foreach (var user in users)
+            {
+                user.TodayUploadCount = 0;
+                if (user.SubscriptionPlan != user.DesiredSubscriptionPlan)
                 {
-                    user.TodayUploadCount = 0;
-                    if (user.SubscriptionPlan != user.DesiredSubscriptionPlan)
-                    {
-                        user.SubscriptionPlan = user.DesiredSubscriptionPlan;
-                    }
+                    user.SubscriptionPlan = user.DesiredSubscriptionPlan;
                 }
-
-                await dbContext.SaveChangesAsync(cancellationToken);
-
-                _logger.LogServiceSuccessful("Reset todays requests.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogServiceException("Reset todays requests.", ex);
             }
 
-            _logger.LogProcessingFinishMessage("Worker Jobs", (int)(DateTime.Now - now).TotalSeconds);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
             _logger.LogNextRunMessage("Worker Jobs", now.AddDays(1));
         }
     }
