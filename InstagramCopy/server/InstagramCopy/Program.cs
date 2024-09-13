@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Prometheus;
 using Services;
 using System.Text;
 
@@ -136,6 +137,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseInstagramLogging();
 
+app.UseHttpMetrics();
+
+app.MapMetrics();
 app.MapControllers();
 
 await app.RunAsync();
