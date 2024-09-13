@@ -20,7 +20,11 @@ namespace InstagramCopy.Services.UserServices.Identity.Handlers
 
         public async Task<RequestConsumptionDto> Handle(GetUserStatisticQuery request, CancellationToken cancellationToken)
         {
-            var user = _userManager.Users.SingleOrDefault(x => x.Id.ToString().Equals(request.Id.ToString()));
+            var user = _userManager.Users
+                .SingleOrDefault(x =>
+                    x.Id
+                    .ToString()
+                    .Equals(request.Id.ToString()));
             var result = _mapper.Map<RequestConsumptionDto>(user);
             return result;
         }
