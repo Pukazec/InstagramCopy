@@ -28,7 +28,7 @@ namespace InstagramCopyTests
         [Fact]
         public void GetFilteredPictures_ByAuthorName_ReturnsCorrectPictures()
         {
-            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author1", UploadedAt = DateTime.UtcNow, HashTags = new List<string> { "tag1" } };
+            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author1", UploadedAt = DateTime.UtcNow, HashTags = ["tag1"] };
             _factory.CreatePicture(picture);
 
             var filter = new PictureFilter { AuthorName = "author1" };
@@ -41,8 +41,8 @@ namespace InstagramCopyTests
         [Fact]
         public void GetFilteredPictures_ByDateRange_ReturnsCorrectPictures()
         {
-            var picture1 = new Picture { Id = Guid.NewGuid(), AuthorName = "author2", UploadedAt = DateTime.UtcNow.AddDays(-1), HashTags = new List<string> { "tag2" } };
-            var picture2 = new Picture { Id = Guid.NewGuid(), AuthorName = "author2", UploadedAt = DateTime.UtcNow, HashTags = new List<string> { "tag2" } };
+            var picture1 = new Picture { Id = Guid.NewGuid(), AuthorName = "author2", UploadedAt = DateTime.UtcNow.AddDays(-1), HashTags = ["tag2"] };
+            var picture2 = new Picture { Id = Guid.NewGuid(), AuthorName = "author2", UploadedAt = DateTime.UtcNow, HashTags = ["tag2"] };
             _factory.CreatePicture(picture1);
             _factory.CreatePicture(picture2);
 
@@ -56,7 +56,7 @@ namespace InstagramCopyTests
         [Fact]
         public void GetPictureById_ReturnsCorrectPicture()
         {
-            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author3", UploadedAt = DateTime.UtcNow, HashTags = new List<string> { "tag3" } };
+            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author3", UploadedAt = DateTime.UtcNow, HashTags = ["tag3"] };
             _factory.CreatePicture(picture);
 
             var result = _factory.GetPictureById(picture.Id);
@@ -76,7 +76,7 @@ namespace InstagramCopyTests
         [Fact]
         public void CreatePicture_CreatesFileSuccessfully()
         {
-            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author4", UploadedAt = DateTime.UtcNow, HashTags = new List<string> { "tag4" } };
+            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author4", UploadedAt = DateTime.UtcNow, HashTags = ["tag4"] };
             var id = _factory.CreatePicture(picture);
 
             var filePath = Path.Combine(_testDirectory, $"{id}.json");
@@ -86,7 +86,7 @@ namespace InstagramCopyTests
         [Fact]
         public void UpdatePicture_UpdatesExistingFile()
         {
-            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author5", UploadedAt = DateTime.UtcNow, HashTags = new List<string> { "tag5" } };
+            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author5", UploadedAt = DateTime.UtcNow, HashTags = ["tag5"] };
             _factory.CreatePicture(picture);
 
             picture.AuthorName = "updatedAuthor";
@@ -100,7 +100,7 @@ namespace InstagramCopyTests
         [Fact]
         public void DeletePicture_DeletesFileSuccessfully()
         {
-            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author6", UploadedAt = DateTime.UtcNow, HashTags = new List<string> { "tag6" } };
+            var picture = new Picture { Id = Guid.NewGuid(), AuthorName = "author6", UploadedAt = DateTime.UtcNow, HashTags = ["tag6"] };
             _factory.CreatePicture(picture);
 
             var result = _factory.DeletePicture(picture.Id);

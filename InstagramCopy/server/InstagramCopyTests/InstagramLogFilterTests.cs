@@ -12,10 +12,10 @@ namespace InstagramCopyTests
         {
             _testLogs = new List<InstagramLog>
             {
-                new InstagramLog { UserName = "user1", OccurredAt = new DateTime(2024, 9, 1), Operation = "like" },
-                new InstagramLog { UserName = "user2", OccurredAt = new DateTime(2024, 9, 5), Operation = "comment" },
-                new InstagramLog { UserName = "user1", OccurredAt = new DateTime(2024, 9, 10), Operation = "share" },
-                new InstagramLog { UserName = "user3", OccurredAt = new DateTime(2024, 9, 15), Operation = "like" },
+                new() { UserName = "user1", OccurredAt = new DateTime(2024, 9, 1), Operation = "like" },
+                new() { UserName = "user2", OccurredAt = new DateTime(2024, 9, 5), Operation = "comment" },
+                new() { UserName = "user1", OccurredAt = new DateTime(2024, 9, 10), Operation = "share" },
+                new() { UserName = "user3", OccurredAt = new DateTime(2024, 9, 15), Operation = "like" },
             }.AsQueryable();
         }
 
