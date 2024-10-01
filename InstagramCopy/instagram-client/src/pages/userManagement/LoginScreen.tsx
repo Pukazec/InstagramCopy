@@ -12,7 +12,10 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
   const { onLoginSuccess } = useAuthContext();
 
   const handleGithubLogin = () => {
-    window.location.href = 'http://localhost:3000/auth/github';
+    if (!process.env.REACT_APP_API_HOST) {
+      return;
+    }
+    window.location.href = `${process.env.REACT_APP_API_HOST}/GitHub/login`;
   };
 
   const onLocalLoginFinish = async (values: any) => {
@@ -64,11 +67,12 @@ const LoginScreen: React.FC<Props> = (props: Props) => {
         }}
       >
         <Button
+          onClick={handleGithubLogin}
           style={{
             fontSize: '15px',
           }}
         >
-          <GithubOutlined onClick={handleGithubLogin} />
+          <GithubOutlined />
           Login with GitHub
         </Button>
       </div>
