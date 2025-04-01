@@ -3,10 +3,6 @@ using InstagramCopy.Services.UserServices.Identity.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace InstagramCopy.Services.UserServices.Identity.Handlers
 {
@@ -26,39 +22,40 @@ namespace InstagramCopy.Services.UserServices.Identity.Handlers
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
             {
-                var userRoles = await _userManager.GetRolesAsync(user);
-                var authClaims = new List<Claim>
-                {
-                    new(ClaimTypes.NameIdentifier, user.Id),
-                    new(ClaimTypes.Name, user.UserName),
-                    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+                return await user.GenerateTokenAsync(_userManager, _configuration);
+                //var userRoles = await _userManager.GetRolesAsync(user);
+                //var authClaims = new List<Claim>
+                //{
+                //    new(ClaimTypes.NameIdentifier, user.Id),
+                //    new(ClaimTypes.Name, user.UserName),
+                //    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                //};
 
-                foreach (var role in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, role));
-                }
+                //foreach (var role in userRoles)
+                //{
+                //    authClaims.Add(new Claim(ClaimTypes.Role, role));
+                //}
 
-                var token = GetToken(authClaims);
+                //var token = GetToken(authClaims);
 
-                return new JwtSecurityTokenHandler().WriteToken(token);
+                //return new JwtSecurityTokenHandler().WriteToken(token);
             }
             return null;
         }
 
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
-        {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+        //private JwtSecurityToken GetToken(List<Claim> authClaims)
+        //{
+        //    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
+        //    var token = new JwtSecurityToken(
+        //        issuer: _configuration["Jwt:Issuer"],
+        //        audience: _configuration["Jwt:Audience"],
+        //        expires: DateTime.Now.AddHours(3),
+        //        claims: authClaims,
+        //        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+        //        );
 
-            return token;
-        }
+        //    return token;
+        //}
     }
 }
